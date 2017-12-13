@@ -1,0 +1,40 @@
+FROM ubuntu
+RUN mkdir -p /alignment
+RUN mkdir -p /alignment/data
+RUN mkdir -p /alignment/data/results
+RUN mkdir -p /alignmentdata/uploads
+RUN mkdir -p /alignment/data/index
+
+RUN apt-get update && apt-get install -y \
+	libmysqlclient-dev \
+	vim \
+	wget \
+	r-base \
+	r-base-dev
+
+RUN R -e 'install.packages("plyr",repos="http://cran.rstudio.com/")'
+
+# Python installs
+RUN apt-get update && apt-get install -y \
+	python \
+	python-dev \
+	python-pip \
+	python-setuptools \
+	python-h5py
+
+# pip installs
+RUN pip install -Iv Flask==0.10.1
+RUN pip install numpy
+RUN pip install MySQL-python
+RUN pip install boto
+RUN pip install tinys3
+
+EXPOSE 3000
+ 
+ADD . /alignment
+
+WORKDIR /alignment
+
+RUN chmod -R 777 /alignment
+ENTRYPOINT ./scripts/autostartStar.sh
+
