@@ -1,0 +1,38 @@
+<h3>Enrichment Search <span id="methodText" class="glyphicon glyphicon-question-sign" style="cursor: hand; font-size:16px;"></span></h3>
+
+<div data-role="collapsible">
+  
+  <p id="methodToggle">Gene expression of samples was quantile normalized and z-score transformed across samples. 'Up' and 'Down' gene sets where selected for each gene expression profile based on the 250 genes with highest (up) and lowest (down) z-scores.
+</p>
+</div>
+
+
+<div class="input-group">
+    <span class="twitter-typeahead" style="position: relative; display: inline-block;">
+        <label for="enrichLib" class="control-label">Gene Set Library</label><br>
+        <select id="enrichLib" class="selectpicker">
+        </select>
+        
+        <br><br>
+        
+        <label for="enrichTerm" class="control-label">Search gene set</label><br>
+        <select id="enrichTerm" class="selectpicker" data-show-subtext="true" data-live-search="true">
+        </select>
+        
+        <br><br>
+        
+        <label for="enrichDir" class="control-label">Gene expression signature direction</label><br>
+        <select id="enrichDir" class="selectpicker">
+            <option>up</option>
+            <option>down</option>
+            <option>up-down combined</option>
+        </select>
+
+    </span>
+
+</div>
+
+<br>
+<div>
+    <button onclick="searchEnrichment()" class="btn btn-info btn-sm enrichSearchBtn">Search enriched samples</button>
+</div>

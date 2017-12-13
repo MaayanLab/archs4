@@ -1,0 +1,32 @@
+<h3>Signature Search <span id="methodText" class="glyphicon glyphicon-question-sign" style="cursor: hand; font-size:16px;"></span></h3>
+
+<div data-role="collapsible">
+  <p id="methodToggle">
+    All genes are z-score transformed across samples. The z-scrores reflect the expression of a gene in a sample relative to the sample population. When genes are uploaded through up and down input field the z-score signatures with the highest values of <br><br><nobr><b>sum(up gene z-scores) - sum(down gene z-scores)</b></nobr><br><br> are returned.
+  </p>
+</div>
+
+<p class="help-block">Search signatures by up and down gene sets</p>
+<p>
+    <a onclick="fillSignatureExample()" id="geneSearchEgBtn">Try an example</a>
+</p>
+<form>
+    <div>
+        <label for="sigName" class="control-label">Signature name</label>
+            <input id="sigName" type="text" class="form-control tt-input" placeholder="Signature name..." autocomplete="off" spellcheck="false" dir="auto" style="position: relative; vertical-align: top; background-color: transparent;">
+        </div>
+        <div>
+            <label for="upGenes" class="control-label">Up genes</label>
+            <textarea class="form-control" id="upGenes" rows="10" placeholder="Up genes"></textarea>
+        </div>
+        <div id="dnGenes-wrapper">
+            <label for="downGenes" class="control-label">Down genes</label>
+            <textarea class="form-control" id="dnGenes" rows="10" placeholder="Down genes"></textarea>
+        </div>
+    </div>
+</form>
+
+<div>
+    <button direction="similar" onclick="searchSignature('similar')" class="btn btn-info btn-sm geneSearchBtn">Search similar signatures</button>
+    <button direction="opposite" onclick="searchSignature('opposite')" class="btn btn-info btn-sm geneSearchBtn pull-right">Search opposite signatures</button>
+</div>

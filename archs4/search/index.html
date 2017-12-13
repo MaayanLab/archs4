@@ -1,0 +1,560 @@
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Alexander Lachmann">
+    <title>ARCHS4</title>
+    
+    <link rel="icon" href="images/archs-icon.png?v=2" type="image/png">
+
+    <script src="scripts/three.min.js"></script>
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <script src="scripts/jquery-3.1.1.min.js"></script>
+    <script src="scripts/d3.layout.cloud.js"></script>
+    <script src="scripts/tags.js"></script>
+    <script src="scripts/prettify.js"></script>
+    <script src="scripts/clipboard.min.js"></script>
+    <script src="scripts/orbitcontrols.js"></script>
+    
+    <script type="text/javascript" src="scripts/word-cloud.js"></script>
+    <!-- <script type="text/javascript" src="http://www.json.org/json2.js"></script> -->
+    <link rel="stylesheet" type="text/css" href="css/spectrum.css">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    
+    <link rel="stylesheet" type="text/css" href="css/jquery-ui.css">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <link rel="stylesheet" href="css/css.css">
+    <link rel="stylesheet" type="text/css" href="css/footer.css">
+    <link rel="stylesheet" type="text/css" href="css/desert.css">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+    
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    
+    <script src="scripts/spectrum.js"></script>
+    <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    
+    <style type="text/css">
+    body {
+        font-size: 100%;
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    }
+    #refresh-btn {
+        float: right;
+        font-size: 12px;
+        border-radius: 0;
+    }
+    
+    html {
+      height: 100%;
+      box-sizing: border-box;
+    }
+
+    *,
+    *:before,
+    *:after {
+      box-sizing: inherit;
+    }
+
+    body {
+      position: relative;
+      margin: 0;
+      padding-bottom: 6rem;
+      min-height: 100%;
+    }
+
+    
+</style>
+    
+    <style type="text/css">
+    body {
+        margin: 0px;
+        padding: 0px;
+        font-family: 'Open Sans', sans-serif;
+        background-color: #f2fbfa;
+        background-image: url("images/congruent_pentagon2.png");
+        background-repeat: repeat;
+    }
+    
+    </style>
+</head>
+
+<body>
+
+<div id="nav" style="margin-bottom: 5px; background-color: #F8F8F8; border-bottom: 1px solid #E7E7E7; height: 60px;">
+    <nav class="navbar navbar-default navbar-toggleable-md navbar-inverse container" role="navigation" style="width:1030px">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse"
+                        data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" title="ARCHS: All RNA-seq and Chip-seq Seqeuncing" href="">
+                    <span>
+                        <img src="images/archs-42.png" width=160 style="padding-top: 3px;">
+                    </span>
+                    </a>
+            </div>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1" style="color:white;">
+                <ul class="nav navbar-nav">
+                    <li id="browse" class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown">Search<span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li role="presentation"><a data-toggle="tab" onclick="toggleSearch('meta')" href="#meta">Metadata</a></li>
+                            <li role="presentation"><a data-toggle="tab" onclick="toggleSearch('signature')" href="#signature">Signature</a></li>
+                            <li role="presentation"><a data-toggle="tab" onclick="toggleSearch('enrichment')" href="#enrichment">Enrichment</a></li>
+                        </ul>
+                    </li>
+                    <li id="browse" class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown">Visualize<span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a id="maxview" href="#">Maximize data view</a></li>
+                            <li><a id="minview" href="#">Minimize data view</a></li>
+                        </ul>
+                    </li>
+                    <li id="browse" class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown">Download<span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="https://s3.amazonaws.com/mssm-seq-matrix/human_matrix.h5">Homo Sapiens (1.7GB)</a></li>
+                            <li><a href="https://s3.amazonaws.com/mssm-seq-matrix/mouse_matrix.h5">Mus Musculus (1.5GB)</a></li>
+                        </ul>
+                    </li>
+
+                    <li id="help"><a href="https://chrome.google.com/webstore/detail/archs4/ognafeffndmmiliegaamoockceneedea" target="_blank">Chrome Extension</a></li>
+                    <li id="chrome"><a href="#help">Help</a></li>
+                    <!--<li id="contribute"><a href="#contribute">Contribute</a></li>-->
+                </ul>
+                <form class="form-inline my-2 my-lg-0" style="padding-top: 6px; float: right; margin-right:-5px;" action="javascript:submitGeneSearch()">
+                  <input class="form-control mr-sm-2" id="genesymbolsearch" type="text" placeholder="Search Gene">
+                  <button class="btn btn-info my-2 my-sm-0" type="button" onclick="submitGeneSearch();">Search</button>
+                </form>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container-fluid -->
+    </nav>
+</div>
+
+
+
+<div style="background-color: white; width: 960px; margin:0 auto; text-align: center; border: 1px solid #E3E3E3;">
+<div><h2>ARCHS<sup>4</sup>: All RNA and ChIP-Seq Sample and Signature Search</h2></div>
+<hr>
+<img src="images/pipeline.png" width=940 style="padding-top: 3px;">
+<hr>
+<div style="padding: 10px;">
+<p style="font-size: 14px;">
+ARCHS<sup>4</sup> provides access to gene counts from HiSeq 2000 and HiSeq 2500 platforms for human and mouse experiments. The website allows download of the data in H5 format for programmatic access as well as a 3-dimensional view of the sample space. Search features allow browsing of the data by meta data annotation, signature similarity and functional enrichment. Selected sample sets can be downloaded into a tab separated through auto-generated R scripts for further analysis. Reads are aligned with <a href="https://pachterlab.github.io/kallisto/about">Kallisto</a> using a custom cloud computing platform. Human samples are aligned against GRCh38 cdna reference and mouse samples against GRCm38 cdna. 
+</p>
+<button type="button" class="btn btn-info" onclick="window.location.href='data.html'">Get Started</button>
+</div>
+<hr>
+
+ <div style="float: left; width: 319px; background-color: #fcfcfc;"><h4>Platforms</h4>
+ <div id="donut-charts-a"></div>
+ </div>
+ <div style="float: left; width: 319px; background-color: #f4f4f4;"><h4>Human <img src="images/human_foot_small.png" height=20></h4>
+ <div id="donut-charts-b"></div></div>
+ <div style="float: left; width: 319px; background-color: #fcfcfc;"><h4>Mouse <img src="images/mouse_foot_small.png" height=20></h4>
+ <div id="donut-charts-c"></div></div>
+ <br style="clear: left;" />
+
+</div>
+
+    <script>
+
+    $(function() {
+        
+        d3.json("search/dataStats.php?search=platform", function (error, dataJ) {
+            var dataset = new Array();
+            var fdataset = new Array();
+            var data = new Array();
+            var fdata = new Array();
+            var total = dataJ[0];
+            
+            for(var i=0; i<dataJ[1].length; i++){
+                data.push({
+                    "cat": dataJ[1][i],
+                    "val": dataJ[2][i],
+                    "species": "platform"
+                });
+                fdata.push({
+                    "cat": dataJ[1][i],
+                    "val": 1000,
+                    "species": "platform"
+                });
+            }
+            
+            dataset.push({
+                "type": "platform",
+                "data": data,
+                "total": total
+            });
+            
+            fdataset.push({
+                "type": "platform",
+                "data": fdata,
+                "total": total
+            });
+            
+            var donuts = new DonutCharts("#donut-charts-a");
+            donuts.create(fdataset, "#donut-charts-a");
+            donuts.update(dataset);
+        });
+        
+        d3.json("search/dataStats.php?search=humansamples", function (error, dataJ) {
+            
+            var dataset = new Array();
+            var fdataset = new Array();
+            var data = new Array();
+            var fdata = new Array();
+            var total = dataJ[0];
+            
+            for(var i=0; i<dataJ[1].length; i++){
+                data.push({
+                    "cat": dataJ[1][i],
+                    "val": dataJ[2][i],
+                    "species": dataJ[3][i]
+                });
+                fdata.push({
+                    "cat": dataJ[1][i],
+                    "val": 1000,
+                    "species": dataJ[3][i]
+                });
+            }
+            
+            dataset.push({
+                "type": "human",
+                "data": data,
+                "total": total
+            });
+            
+            fdataset.push({
+                "type": "human",
+                "data": fdata,
+                "total": total
+            });
+            
+            var donuts = new DonutCharts("#donut-charts-b");
+            donuts.create(fdataset, "#donut-charts-b");
+            donuts.update(dataset);
+        });
+        
+        d3.json("search/dataStats.php?search=mousesamples", function (error, dataJ) {
+            
+            var dataset = new Array();
+            var fdataset = new Array();
+            var data = new Array();
+            var fdata = new Array();
+            var total = dataJ[0];
+            
+            for(var i=0; i<dataJ[1].length; i++){
+                data.push({
+                    "cat": dataJ[1][i],
+                    "val": dataJ[2][i],
+                    "species": dataJ[3][i]
+                });
+                fdata.push({
+                    "cat": dataJ[1][i],
+                    "val": 1000,
+                    "species": dataJ[3][i]
+                });
+            }
+            
+            dataset.push({
+                "type": "mouse",
+                "data": data,
+                "total": total
+            });
+            
+            fdataset.push({
+                "type": "mouse",
+                "data": fdata,
+                "total": total
+            });
+            
+            var donuts = new DonutCharts("#donut-charts-c");
+            donuts.create(fdataset, "#donut-charts-c");
+            donuts.update(dataset);
+        });
+    });
+    
+
+    function DonutCharts(container) {
+        
+        var charts = d3.select(container);
+        
+        var chart_m,
+            chart_r,
+            color = d3.scale.category20();
+            
+        var getCatNames = function(dataset) {
+            var catNames = new Array();
+            
+            for (var i = 0; i < dataset[0].data.length; i++) {
+                catNames.push(dataset[0].data[i].cat);
+            }
+            return catNames;
+        }
+        
+        var createCenter = function() {
+            
+            var donuts = d3.selectAll('.donut');
+            
+            donuts.append('text')
+                    .style("font", "15px arial")
+                    .attr('class', 'center-txt type')
+                    .attr('y', chart_r * -0.16)
+                    .attr('text-anchor', 'middle')
+                    .style('font-weight', 'bold');
+                    
+            donuts.append('text')
+                    .style("font", "16px arial")
+                    .attr('class', 'center-txt value')
+                    .attr('text-anchor', 'middle');
+            
+            resetAllCenterText();
+        }
+
+        var setCenterText = function(thisDonut, cate, valu) {
+            
+            charts.selectAll('.value')
+                .text('');
+            charts.selectAll('.percentage')
+                .text('');
+            charts.selectAll('.type')
+                .text('');
+            thisDonut.select('.value').text(valu);
+            thisDonut.select('.type').text(cate);
+        }
+        
+        var resetAllCenterText = function() {
+            charts.select('.value')
+                .text(function(d) {
+                    return d.total;
+                });
+                
+            charts.selectAll('.type')
+                .text('Total');
+        }
+
+        var pathAnim = function(path, dir) {
+            switch(dir) {
+                case 0:
+                    path.transition()
+                        .duration(500)
+                        .ease('bounce')
+                        .attr('d', d3.svg.arc()
+                            .innerRadius(chart_r * 0.6)
+                            .outerRadius(chart_r)
+                        );
+                    break;
+
+                case 1:
+                    path.transition()
+                        .attr('d', d3.svg.arc()
+                            .innerRadius(chart_r * 0.6)
+                            .outerRadius(chart_r * 1.08)
+                        );
+                    break;
+            }
+        }
+
+        var updateDonut = function() {
+
+            //resetAllCenterText("hm");
+
+            var eventObj = {
+                
+                'mouseover': function(d, i, j) {
+                    pathAnim(d3.select(this), 1);
+                    var thisDonut = charts.select('.type' + j);
+                    setCenterText(thisDonut, d.data.cat, d.data.val);
+                },
+                
+                'mouseout': function(d, i, j) {
+                    var thisPath = d3.select(this);
+                    if (!thisPath.classed('clicked')) {
+                        pathAnim(thisPath, 0);
+                    }
+                    var thisDonut = charts.select('.type' + j);
+                    resetAllCenterText();
+                    
+                },
+                
+                'click': function(d, i, j) {
+                    var thisDonut = charts.select('.type' + j);
+                    
+                    if(d.data.species != "platform"){
+                        sessionStorage.setItem("sent", d.data.cat);
+                        sessionStorage.setItem("species", d.data.species);
+                        var win = window.open("data.html","_self");
+                    }
+                }
+            };
+
+            var pie = d3.layout.pie()
+                            .sort(null)
+                            .value(function(d) {
+                                return d.val;
+                            });
+
+            var arc = d3.svg.arc()
+                            .innerRadius(chart_r * 0.6)
+                            .outerRadius(function() {
+                                return (d3.select(this).classed('clicked'))? chart_r * 1.08
+                                                                           : chart_r;
+                            });
+
+            // Start joining data with paths
+            var paths = charts.selectAll('.donut')
+                            .selectAll('path')
+                            .data(function(d, i) {
+                                return pie(d.data);
+                            });
+
+            paths.transition()
+                .duration(1000)
+                .attr('d', arc);
+
+            paths.enter()
+                .append('svg:path')
+                    .attr('d', arc)
+                    .style('fill', function(d, i) {
+                        return color(i);
+                    })
+                    .style('stroke', '#ffffff')
+                    .on(eventObj)
+
+            paths.exit().remove();
+            
+        }
+
+        this.create = function(dataset, container) {
+            var $charts = $(container);
+            chart_m = $charts.innerWidth() / dataset.length / 2 * 0.14;
+            chart_r = $charts.innerWidth() / dataset.length / 2 * 0.85;
+            
+            charts.append('svg')
+                .attr('class', 'legend')
+                .attr('width', '100%')
+                .attr('height', 0)
+                .attr('transform', 'translate(0, 300)');
+                
+            var donut = charts.selectAll('.donut')
+                            .data(dataset)
+                        .enter().append('svg:svg')
+                            .attr('width', (chart_r + chart_m) * 2)
+                            .attr('height', (chart_r + chart_m) * 2)
+                            .attr('stroke-width', 3)
+                        .append('svg:g')
+                            .attr('class', function(d, i) {
+                                return 'donut type' + i;
+                            })
+                            .attr('transform', 'translate(' + (chart_r+chart_m) + ',' + (chart_r+chart_m) + ')');
+            
+            createCenter();
+            updateDonut();
+            
+        }
+    
+        this.update = function(dataset) {
+            // Assume no new categ of data enter
+            var donut = charts.selectAll(".donut").data(dataset);
+            updateDonut();
+        }
+    }
+
+    /*
+     * Returns a json-like object.
+     */
+    function genData(i) {
+        var type = ['Users', 'Avg Upload', 'Avg Files Shared'];
+        var unit = ['M', 'GB', ''];
+        var cat = ['Brain', 'Stem Cell', 'Macrophage', 'Lung', 'Blood', 'MCF7', 'PC3', 'Liver','1','2','3','4','5','6','7','Other'];
+
+        var dataset = new Array();
+        var data = new Array();
+        var total = 0;
+
+        for (var j = 0; j < cat.length; j++) {
+            var value = Math.random()*10*(3-i);
+            total += value;
+            data.push({
+                "cat": cat[j],
+                "val": value
+            });
+        }
+
+        dataset.push({
+            "type": type[i],
+            "unit": unit[i],
+            "data": data,
+            "total": total
+        });
+    
+        return dataset;
+    }
+    </script>
+
+<br>
+
+<style>
+.fl a {
+  text-decoration: none;
+  color: #000;
+
+  -webkit-transition: font-size 0.3s ease, background-color 0.3s ease;
+  -moz-transition: font-size 0.3s ease, background-color 0.3s ease;
+  -o-transition: font-size 0.3s ease, background-color 0.3s ease;
+  -ms-transition: font-size 0.3s ease, background-color 0.3s ease;
+  transition: font-size 0.3s ease, background-color 0.3s ease;
+  display: block;
+}
+
+.fl a:hover {
+  font-weight: bolder;
+  color: #45c19f;
+}
+</style>
+
+<div style="padding:10px; padding-top:10px; padding-bottom: 0px; background-color:#F8F8F8; height:130px; border-top: 1px solid #E7E7E7;">
+    <div style="float: left; width:260px; padding-left:10px;">
+       <img src="images/mountsinai.png" style="padding-bottom:10px;" height=50><br>
+       <img src="images/dcic.png" height=50>
+    </div>
+    
+    <div style="float: left;">
+         <ul style="padding-left: 30px; list-style: none;">
+            <li class="fl"><a href="http://icahn.mssm.edu/research/labs/maayan-laboratory" target="_blank">The Ma'ayan Lab</a></li>
+            <li class="fl"><a href="http://www.lincs-dcic.org/" target="_blank">BD2K-LINCS Data Coordination and Integration Center (DCIC)</a></li>
+            <li class="fl"><a href="http://www.lincsproject.org/">NIH LINCS program</a></li>
+            <li class="fl"><a href="http://bd2k.nih.gov/" target="_blank">NIH Big Data to Knowledge (BD2K)</a></li>
+            <li class="fl"><a href="https://commonfund.nih.gov/idg/index" target="_blank">NIH Illuminating the Druggable Genome (IDG) Program</a></li>
+            <li class="fl"><a href="http://icahn.mssm.edu/" target="_blank">Icahn School of Medicine at Mount Sinai</a></li>
+        </ul>
+    </div>
+    <div style="float: right; color: grey;">
+            © Ma'ayan Lab.
+    </div>
+</div>
+</div>
+
+
+</body>
+</html>

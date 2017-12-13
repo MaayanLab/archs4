@@ -1,0 +1,736 @@
+30000 
+@media (min-width: 979px) { 
+  ul.nav li.dropdown:hover > ul.dropdown-menu {
+    display: block;
+  }
+}
+
+html,
+body {
+  font-size: 13px;
+}
+
+.codedisplay {
+  padding = 0px;
+  height: 200px;
+  overflow-y: scroll;
+}
+
+#center{
+  cursor: pointer;
+}
+
+#page-content {
+  min-height: 100%;
+  height: auto;
+  /* Negative indent footer by its height */
+  margin: 0 auto -200px;
+  /* Pad bottom by footer height */
+  padding: 0 0 200px;
+}
+
+#sidebar-wrapper {
+  z-index: 10;
+  width: 350px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: #fff;
+  font-size: 12px;
+}
+
+#sidebar-wrapper .panel-heading{
+  cursor: move;
+}
+
+.table-condensed {
+  font-size: 10px;
+}
+
+#wrap {
+  position: relative;
+  margin-left: auto;
+  margin-right: auto; }
+
+
+#legendcontainer{
+    top: 6px;
+    left: 445px;
+    width: 200px;
+    position: absolute;
+    background-color: #f5f5f5;
+    padding: 0px 0px 10px 10px;
+    overflow: hidden;
+    border: 1px solid #dedede;
+}
+
+.result_table{
+   width: 100%;
+}
+
+#legend{
+  width: 200px;
+  float:left;
+}
+
+#no-margin{
+    margin: 0px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Roboto', sans-serif;
+}
+
+a,
+a:link,
+a:active,
+a:visited,
+a:hover {
+  color: #0275d8;
+  cursor: pointer;
+}
+
+.svgBorder {
+  /*border-style: solid;*/
+  /*border-color: #656468;*/
+  /*border-color: white;*/ }
+
+.overlay {
+  fill: none;
+  pointer-events: all; }
+
+text {
+  cursor: default; }
+
+.highlight-legend {
+  border-style: solid;
+  border-color: black;
+}
+
+.highlight circle {
+  stroke: black;
+  stroke-width: 2;
+}
+
+#searchBox {
+  padding-top: 4px;
+  text-align: center;
+  padding-bottom: 4px;
+  border-style: solid;
+  margin-bottom: 2px; 
+  margin-top: 2px;
+}
+
+.custom-autocomplete-ul {
+  /*background-color: rgba(0, 0, 0, 0.5);*/
+  /*color: white;*/
+  /*font-size: 0.6em; */
+}
+/*
+a {
+  text-decoration: underline;
+  cursor: pointer;
+  color: #656468; }*/
+
+#below {
+  margin-top: 10px; }
+
+#selectionPanel {
+  text-align: left;
+  font-size: 0; }
+
+.selectionBar {
+  background-color: #49b0c9;
+  height: 18px;
+  width: 151.2px;
+  display: inline-block;
+  text-align: left;
+  font-size: 0px; }
+
+.selectionBarText {
+  width: 136.2px;
+  height: 18px;
+  display: inline-block;
+  text-align: center;
+  font-size: 15px;
+  cursor: default; }
+
+.destroy {
+  position: relative;
+  top: 2px;
+  display: none;
+  cursor: pointer;
+  width: 13px;
+  height: 13px;
+  background: url(img/destroy.png) no-repeat;
+  background-size: 100%;
+}
+
+.selectionBar:hover .destroy {
+  display: inline-block; }
+
+.destroy:hover {
+  background-position: 0 -13px; }
+
+.tooltipSpan {
+  margin: 0;
+  font-style: bold;
+  color: white; }
+
+.tooltipUl {
+  margin: 0;
+  font-size: 0.6em;
+  text-align: left;
+  padding-left: 1.5em;
+  color: white; }
+
+.custom-ui-tooltip {
+  /*background-color: rgba(0, 0, 0, 0.5); */
+}
+
+#sigNameBtn {
+  margin-left: 0;
+}
+
+#colorPickerButton {
+  position: absolute;
+  top: 121;
+  left: 187.5;
+  width: 50;
+  display: none; }
+
+.catagory-header {
+  text-align: center;
+}
+
+label, .control-label {
+  font-weight: bold;
+}
+
+.glyphicon.glyphicon-refresh {
+    font-size: 30px;
+}
+
+.fa-spin-custom, .glyphicon-spin {
+    -webkit-animation: spin 1000ms infinite linear;
+    animation: spin 1000ms infinite linear;
+}
+@-webkit-keyframes spin {
+    0% {
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    100% {
+        -webkit-transform: rotate(359deg);
+        transform: rotate(359deg);
+    }
+}
+@keyframes spin {
+    0% {
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    100% {
+        -webkit-transform: rotate(359deg);
+        transform: rotate(359deg);
+    }
+}
+
+/* Bootstrap overrides
+ * -------------------------------------------------------------------------- */
+
+.navbar-brand {
+  font-size: 50px;
+  font-weight: bold;
+}
+
+
+/* navbar */
+.navbar-default {
+    background-color: #F8F8F8;
+    border-color: #F8F8F8;
+    font-size: 14px;
+    height: 58px;
+    padding: 5px;
+}
+/* title */
+.navbar-default .navbar-brand {
+    color: #777;
+}
+.navbar-default .navbar-brand:hover,
+.navbar-default .navbar-brand:focus {
+    color: #5E5E5E;
+}
+/* link */
+.navbar-default .navbar-nav > li > a {
+    color: #777;
+}
+.navbar-default .navbar-nav > li > a:hover,
+.navbar-default .navbar-nav > li > a:focus {
+    color: #333;
+}
+.navbar-default .navbar-nav > .active > a, 
+.navbar-default .navbar-nav > .active > a:hover, 
+.navbar-default .navbar-nav > .active > a:focus {
+    color: #555;
+    background-color: #E7E7E7;
+}
+.navbar-default .navbar-nav > .open > a, 
+.navbar-default .navbar-nav > .open > a:hover, 
+.navbar-default .navbar-nav > .open > a:focus {
+    color: #ff0000;
+    background-color: #F8F8F8;
+}
+/* caret */
+.navbar-default .navbar-nav > .dropdown > a .caret {
+    border-top-color: #777;
+    border-bottom-color: #777;
+}
+.navbar-default .navbar-nav > .dropdown > a:hover .caret,
+.navbar-default .navbar-nav > .dropdown > a:focus .caret {
+    border-top-color: #333;
+    border-bottom-color: #333;
+}
+.navbar-default .navbar-nav > .open > a .caret, 
+.navbar-default .navbar-nav > .open > a:hover .caret, 
+.navbar-default .navbar-nav > .open > a:focus .caret {
+    border-top-color: #555;
+    border-bottom-color: #555;
+}
+/* mobile version */
+.navbar-default .navbar-toggle {
+    border-color: #DDD;
+}
+.navbar-default .navbar-toggle:hover,
+.navbar-default .navbar-toggle:focus {
+    background-color: #DDD;
+}
+.navbar-default .navbar-toggle .icon-bar {
+    background-color: #CCC;
+}
+@media (max-width: 767px) {
+    .navbar-default .navbar-nav .open .dropdown-menu > li > a {
+        color: #777;
+    }
+    .navbar-default .navbar-nav .open .dropdown-menu > li > a:hover,
+    .navbar-default .navbar-nav .open .dropdown-menu > li > a:focus {
+        color: #333;
+    }
+}
+
+
+/* --------- popup ------------*/
+
+/* Outer */
+.popup {
+    width:100%;
+    height:100%;
+    display:none;
+    position:fixed;
+    top:0px;
+    left:0px;
+    background:rgba(0,0,0,0.75);
+}
+ 
+/* Inner */
+.popup-inner {
+    max-width:700px;
+    width:90%;
+    padding:20px;
+    position:absolute;
+    top:50%;
+    left:50%;
+    -webkit-transform:translate(-50%, -50%);
+    transform:translate(-50%, -50%);
+    box-shadow:0px 2px 6px rgba(0,0,0,1);
+    border-radius:3px;
+    background:#fff;
+    min-width:700px;
+}
+ 
+/* Close Button */
+.popup-close {
+    width:30px;
+    height:30px;
+    padding-top:4px;
+    display:inline-block;
+    position:absolute;
+    top:0px;
+    right:0px;
+    transition:ease 0.25s all;
+    -webkit-transform:translate(50%, -50%);
+    transform:translate(50%, -50%);
+    border-radius:1000px;
+    background:rgba(0,0,0,0.8);
+    font-family:Arial, Sans-Serif;
+    font-size:20px;
+    text-align:center;
+    line-height:100%;
+    color:#fff;
+}
+ 
+.popup-close:hover {
+    -webkit-transform:translate(50%, -50%) rotate(180deg);
+    transform:translate(50%, -50%) rotate(180deg);
+    background:rgba(0,0,0,1);
+    text-decoration:none;
+}
+
+#gene_genepage_info {
+  min-width:1050px;
+  max-width:1050px;
+}
+
+
+/* Landing page
+ * -------------------------------------------------------------------------- */
+#landing-page #description h2 {
+  border-bottom: 1px solid #eee;
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 15px;
+  margin-top: 0;
+  padding-bottom: 15px;
+}
+
+#landing-page .table-responsive {
+  border: 1px solid #eee;
+}
+
+#landing-page .panel-title {
+  font-size: 25px;
+}
+
+#landing-page .panel-body {
+  padding: 20px;
+}
+
+#landing-page .panel-body h3 {
+  font-size: 16px;
+  font-weight: bold;
+  margin-top: 0;
+}
+
+#landing-page #sigNameInput {
+  font-size: 13px;
+  height: 36px;
+}
+
+#landing-page #sigNameBtn {
+  font-size: 13px;
+}
+
+#landing-page #dnGenes-wrapper {
+  margin-top: 20px;
+}
+
+#landing-page textarea {
+  height: 150px;
+}
+
+#landing-page img {
+  border: 1px solid #eee;
+}
+
+
+/* Similarity page
+ * -------------------------------------------------------------------------- */
+#similarity-page #search-bar .input-group {
+  max-width: 400px;
+}
+
+#similarity-page #searchResults {
+  margin-top: 20px;
+}
+#similarity-page #searchResults dl {
+  margin-bottom: 0;
+}
+
+.clipboard {
+    width: 160px;
+    height: 34px;
+    margin: 10px;
+    background-color: #f5f5f5;
+    border: 2px solid #dedede;
+    color: black;
+    -webkit-transition-duration: 0.0s; /* Safari */
+    transition-duration: 0.0s;
+}
+
+.clipboard:hover {
+    background-color: #dcdcdc;
+    box-shadow: 0 0 10px #dddddd;
+}
+
+.clipboard:active {
+    background-color: #EF5E5B;
+    border-color: darkred;
+    box-shadow: 0 0 10px #dddddd;
+    color: white;
+}
+
+.navbar-brand
+{
+     margin-top: -15px !important;
+}
+
+#outer_center{
+  padding-left: 8px;
+  width: 683px;
+}
+
+.projection-head{
+  width: 120px;
+  float: left;
+  font-size: 16px;
+}
+
+.projection-shrink{
+  width: 40px;
+  float: right;
+  margin: -5;
+  margin-right: -10px;
+  margin-left: 20px;
+  font-size: 28px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.projection-shrink:hover{
+  font-size: 24px;
+  color: red;
+  box-shadow: 0 0 15px #cccccc;
+}
+
+.panel-default{
+  margin-bottom: 10px;
+}
+
+.left{
+  margin-right: -15px;
+}
+
+#resultbox{
+  padding-left: 15px;
+  width: 675px;
+}
+
+.modeButton{
+  background-color: #1ebcbb;
+  border-radius: 5px;
+  padding: 6px;
+  border: none;
+  outline:none;
+}
+
+.modeButton:hover {
+    border-color: #ffcb3d;
+    box-shadow: 0 0 20px #ffcb3d;
+    color: white;
+}
+
+.colorbox{
+  width:20px;
+  height:20px;
+}
+
+.result_table{
+  font-size: 12px;
+}
+
+.downloadScript {
+    width: 150px;
+    height: 34px;
+    background-color: #f5f5f5;
+    border: 2px solid #dedede;
+    color: black;
+    -webkit-transition-duration: 0.0s; /* Safari */
+    transition-duration: 0.0s;
+}
+
+.downloadScript:hover {
+    background-color: #dcdcdc;
+    box-shadow: 0 0 10px #dddddd;
+}
+
+.downloadScript:active {
+    background-color: #EF5E5B;
+    border-color: darkred;
+    box-shadow: 0 0 10px #dddddd;
+    color: white;
+}
+
+
+.selectpicker{
+    font-size: 16px;
+    width: 100%;
+    padding: 5px;
+}
+
+
+#cset{
+    background-color: "white";
+    width: 280px;
+    height: 40px;
+    padding: 5px;
+    border-bottom: 1px solid #lightgrey;
+    color: #000000;
+}
+
+#colorText{
+    padding-top: 5px;
+    float: left;
+    white-space: nowrap;
+    overflow: hidden;
+    max-width: 180px;
+    border-left:1em solid transparent;
+    border-right:1em solid transparent;
+    text-overflow: ellipsis;
+}
+
+
+#legendLabelText{
+    white-space: nowrap;
+    overflow: hidden;
+    max-width: 170px;
+    border-left:1em solid transparent;
+    border-right:1em solid transparent;
+    text-overflow: ellipsis;
+}
+
+.clickmarkers { 
+    border: 15px solid transparent;
+    background-color: rgba(0, 0, 0, 0.2);
+
+    -webkit-border-image: url(../images/selection.png) 30 round; /* Safari 3.1-5 */
+    -o-border-image: url(../images/selection.png) 30 round; /* Opera 11-12.1 */
+    border-image: url(../images/selection.png) 30 round;
+}
+
+
+/*Basic reset*/
+* {margin: 0; padding: 0;}
+
+#menuu {
+  border: none;
+  margin: 0px;
+  padding: 0px;
+}
+
+#menuu2 {
+  border: none;
+  margin: 0px;
+  padding: 0px;
+}
+
+.child {
+    pointer-events:none;
+}
+
+/*  dendrogram  */
+.link {
+    fill: none;
+    stroke: #555;
+    stroke-opacity: 0.3;
+    stroke-width: 3px;
+}
+text {
+    font-family: "Arial Black", Gadget, sans-serif;
+    fill: black;
+    font-weight: normal;
+    font-size: 8px;
+}
+.xAxis .tick text{
+    font-family: "Arial Black", Gadget, sans-serif;
+    fill: black;
+    font-weight: 100;
+    font-size: 10px;
+
+    stroke: #fff;
+    stroke-width: 4px;
+    stroke-linecap: butt;
+    stroke-linejoin: miter;
+    font-weight: 200;
+}
+.grid .tick line{
+    stroke: grey;
+    stroke-dasharray: 5, 10;
+    opacity: 0.7;
+}
+.grid path{
+    stroke-width: 0;
+}
+.node circle {
+    fill: #999;
+}
+.node--internal circle {
+    fill: #555;
+}
+.node--internal text {
+    font-size: 14px;
+}
+.node--leaf text {
+    font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+    fill: white;
+    font-weight: lighter;
+    font-size:  10px;
+    paint-order: stroke;
+
+    stroke: #000000;
+    stroke-width: 4px;
+    stroke-linecap: butt;
+    stroke-linejoin: miter;
+    font-weight: 200;
+}
+.ballG text {
+    fill: white;
+}
+.line {
+    fill: none;
+    stroke: #444;
+    stroke-width: 2px;
+}
+
+.li {
+  margin: 0px;
+  padding: 0px;
+}
+
+.ul {
+  margin: 0px;
+  padding: 0px;
+}
+
+
+.ul .li { 
+    list-style-type: none;
+}
+
+
+
+ise = c()
+for(i in 1:10000){
+  sa = sample(1:30000, 650)
+  sa2 = sample(1:30000, 195)
+  ise = c(ise, length(intersect(sa,sa2)))
+}
+
+
+for(i in 1:200){
+  print(i)
+  print(rev(sort(table(tissue[km$cluster == i]))))
+  
+  
+}
+
+
+
+
+
+
+

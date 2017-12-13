@@ -1,0 +1,1084 @@
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Alexander Lachmann">
+    <title>ARCHS4</title>
+    
+    <link rel="icon" href="images/archs-icon.png?v=2" type="image/png">
+
+    <script src="scripts/three.min.js"></script>
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <script src="scripts/jquery-3.1.1.min.js"></script>
+    <script src="scripts/d3.layout.cloud.js"></script>
+    <script src="scripts/tags.js"></script>
+    <script src="scripts/prettify.js"></script>
+    <script src="scripts/clipboard.min.js"></script>
+    <script src="scripts/orbitcontrols.js"></script>
+    
+    <script type="text/javascript" src="scripts/word-cloud.js"></script>
+    <!-- <script type="text/javascript" src="http://www.json.org/json2.js"></script> -->
+    <link rel="stylesheet" type="text/css" href="css/spectrum.css">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    
+    <link rel="stylesheet" type="text/css" href="css/jquery-ui.css">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <link rel="stylesheet" href="css/css.css">
+    <link rel="stylesheet" type="text/css" href="css/footer.css">
+    <link rel="stylesheet" type="text/css" href="css/desert.css">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+    
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    
+    <script src="scripts/spectrum.js"></script>
+    <script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    
+    <script src="scripts/jquery.auto-complete.min.js"></script>
+    <link rel="stylesheet" href="css/jquery.auto-complete.css">
+    
+    <style type="text/css">
+    body {
+        font-size: 100%;
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    }
+    #refresh-btn {
+        float: right;
+        font-size: 12px;
+        border-radius: 0;
+    }
+    
+    html {
+      height: 100%;
+      box-sizing: border-box;
+    }
+
+    *,
+    *:before,
+    *:after {
+      box-sizing: inherit;
+    }
+
+    body {
+      position: relative;
+      margin: 0;
+      padding-bottom: 6rem;
+      min-height: 100%;
+    }
+    
+    table {
+      border-spacing: 10px;
+      background: #61ffc9;
+      font-size: 14px;
+    }
+    td {
+      padding: 10px;
+      background: #e4fff6;
+    }
+
+    
+</style>
+    
+    <style type="text/css">
+    body {
+        margin: 0px;
+        padding: 0px;
+        font-family: 'Open Sans', sans-serif;
+        background-color: #f2fbfa;
+        background-image: url("images/congruent_pentagon2.png");
+        background-repeat: repeat;
+    }
+    
+    </style>
+    
+    <script type="text/javascript">
+        function submitGeneSearch(){
+            var geneid = $("#genesymbolsearch").val().toUpperCase();
+            if(geneid.length > 1){
+                window.open("search/genepage.php?search=go&gene="+geneid,'_blank');
+            }
+        }
+        
+        function scrollPage(location){
+            $('html, body').animate({
+                scrollTop: $("#"+location).offset().top - 20
+            }, 500);
+        }
+    </script>
+    
+    
+</head>
+
+<body>
+
+
+<div id="nav" style="margin-bottom: 5px; background-color: #F8F8F8; border-bottom: 1px solid #E7E7E7; height: 60px;">
+    <nav class="navbar navbar-default navbar-toggleable-md navbar-inverse container" role="navigation" style="width:1050px;">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse"
+                        data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" title="ARCHS: All RNA-seq and Chip-seq Seqeuncing" href="index.html">
+                    <span>
+                        <img src="images/archs-42.png" width=160 style="padding-top: 3px;">
+                    </span>
+                    </a>
+            </div>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1" style="color:white;">
+                <ul class="nav navbar-nav">
+                    <li id="browse" class="dropdown disabled">
+                        <a class="dropdown-toggle" data-toggle="dropdown" style="color: lightgrey;">Search<span class="caret"></span></a>
+                        
+                    </li>
+                    <li id="visualize"><a href="data.html">Visualize</a></li>
+                    
+                    <li id="download"><a href="download.html">Download</a></li>
+
+                    <li id="chrome"><a href="https://chrome.google.com/webstore/detail/archs4/ognafeffndmmiliegaamoockceneedea" target="_blank">Chrome Extension</a></li>
+                    <li id="help"><a href="help.html">Help</a></li>
+                    
+                    <li id="twitter"><a href="#" onclick="window.open('https://twitter.com/intent/tweet?original_referer=https%3A%2F%2Fwww.biorxiv.org%2Fcontent%2Fearly%2F2017%2F09%2F15%2F189092&ref_src=twsrc%5Etfw&text=Massive%20Mining%20of%20Publicly%20Available%20RNA-seq%20Data%20from%20Human%20and%20Mouse&tw_p=tweetbutton&url=https%3A%2F%2Fwww.biorxiv.org%2Fcontent%2Fearly%2F2017%2F09%2F15%2F189092', 'newwindow', 'width=600, height=250'); return false;"><img id="animation-target" src="images/twitter.png" width="25" style="margin-top:-1px;"></a></li>
+                    
+                    <!--<li id="contribute"><a href="#contribute">Contribute</a></li>-->
+                </ul>
+                <form class="form-inline my-2 my-lg-0" style="padding-top: 6px; float: right; margin-right:-5px;" action="javascript:submitGeneSearch()">
+                  <input class="form-control mr-sm-2" id="genesymbolsearch" type="text" placeholder="Search Gene">
+                  <button class="btn btn-info my-2 my-sm-0" type="button" onclick="submitGeneSearch();">Search</button>
+                </form>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container-fluid -->
+    </nav>
+</div>
+
+
+
+<div style="background-color: white; width: 960px; margin:0 auto; border: 1px solid #E3E3E3; padding-left: 20px; padding-right:20px;">
+<div id="helphead"><h2>ARCHS<sup>4</sup>  Help</h2></div>
+<hr>
+
+<div style="width:900px; height:150px; padding-left:30px;">
+    <div style="float: left; width:340px;">
+        <h3><a href="javascript:scrollPage('firststeps')" style="color:black;">Getting Started with ARCHS4</a></h3>
+        <ul style="padding-left: 30px; list-style: none;">
+           <li class="fl"><a href="javascript:scrollPage('about')">About ARCHS<sup>4</sup></a></li>
+           <li class="fl"><a href="javascript:scrollPage('downloadfiles')">Download files</a></li>
+           <li class="fl"><a href="javascript:scrollPage('chromeextension')">Chrome Extension</a></li>
+           <li class="fl"><a href="javascript:scrollPage('genelanding')">Gene landing pages</a></li>
+        </ul>
+    </div>
+
+    <div style="float: left; width:310px;">
+        <h3><a href="javascript:scrollPage('datavisualization')" style="color:black;">Data visualization</a></h3>
+        <ul style="padding-left: 30px; list-style: none;">
+           <li class="fl"><a href="javascript:scrollPage('dataviewer')">WebGL data viewer</a></li>
+           <li class="fl"><a href="javascript:scrollPage('vieweroptions')">Viewer options</a></li>
+           <li class="fl"><a href="javascript:scrollPage('viewerinteraction')">Viewer-user interaction</a></li>
+        </ul>
+    </div>
+
+    <div style="float: left;">
+        <h3><a href="javascript:scrollPage('genepages')" style="color:black;">Gene pages</a></h3>
+        <ul style="padding-left: 30px; list-style: none;">
+           <li class="fl"><a href="javascript:scrollPage('functionalprediction')">Functional prediction</a></li>
+           <li class="fl"><a href="javascript:scrollPage('correlation')">Gene correlation</a></li>
+           <li class="fl"><a href="javascript:scrollPage('atlas')">Tissue expression atlas</a></li>
+        </ul>
+    </div>
+
+</div>
+
+<div style="width:900px; height:150px; padding-left:30px;">
+
+    <div style="float: left; width:340px;">
+        <h3><a href="javascript:scrollPage('datahandling')" style="color:black;">Data handling</a></h3>
+        <ul style="padding-left: 30px; list-style: none;">
+           <li class="fl"><a href="javascript:scrollPage('abouth5')">About the H5 file format</a></li>
+           <li class="fl"><a href="javascript:scrollPage('generatedscript')">Using auto-generated download script</a></li>
+           <li class="fl"><a href="javascript:scrollPage('parsingh5')">Parsing the H5 file</a></li>
+           <li class="fl"><a href="javascript:scrollPage('batcheffect')">Batch effect removal</a></li>
+        </ul>
+    </div>
+
+    <div style="float: left; width:310px;">
+        <h3><a href="javascript:scrollPage('searchtools')" style="color:black;">Search tools</a></h3>
+        <ul style="padding-left: 30px; list-style: none;">
+           <li class="fl"><a href="javascript:scrollPage('metadatasearch')">Meta data search</a></li>
+           <li class="fl"><a href="javascript:scrollPage('signaturesearch')">Signature search</a></li>
+           <li class="fl"><a href="javascript:scrollPage('enrichmentsearch')">Enrichment search</a></li>
+           <li class="fl"><a href="javascript:scrollPage('genesearch')">Gene search</a></li>
+        </ul>
+    </div>
+    
+    <div style="float: left;">
+        <h3><a href="javascript:scrollPage('terms')" style="color:black;">Terms of use</a></h3>
+    </div>
+</div>
+
+<hr>
+<div style="text-align: center;">
+<iframe width="854" height="480" src="https://www.youtube.com/embed/xw8vh_sYJ4s" frameborder="0" allowfullscreen></iframe>
+</div>
+<hr>
+<div>
+<h3 id="firststeps">First Steps <i class="glyphicon glyphicon-arrow-up" style="cursor:pointer; font-size: 16;" onclick="scrollPage('nav');"></i>
+</h3>
+
+<h4 id="about">About ARCHS<sup>4</sup></h4>
+<p style="font-size: 14px;">
+ARCHS<sup>4</sup> provides access to gene counts from HiSeq 2000 and HiSeq 2500 platforms for human and mouse experiments. The website allows download of the data in H5 format for programmatic access as well as a 3-dimensional view of the sample space. Search features allow browsing of the data by meta data annotation, signature similarity and functional enrichment. Selected sample sets can be downloaded into a tab separated through auto-generated R scripts for further analysis. Reads are aligned with <a href="https://pachterlab.github.io/kallisto/about">Kallisto</a> using a custom cloud computing platform. Human samples are aligned against GRCh38 cdna reference and mouse samples against GRCm38 cdna. All processable files from the GEO/SRA database since July 2017 are processed and available for download.
+</p>
+<br>
+<h4 id="downloadfiles">Download files</h4>
+<div style="width: 900px; height: 400px;">
+<div style="float: left; height: 400px;">
+<img src="images/results.png" width="400" style="border: 1px solid black;">
+</div>
+<div style="float: left; padding-left: 20px; width: 480px; height: 400px;">
+<p style="font-size: 14px;">
+Raw read counts can be downloaded by browsing to the top of the ARCHS<sup>4</sup> website and selecting the Download option. The raw counts are separated by human and mouse samples and are provided in H5 format. H5 provides efficient compression of the gene counts data. Tab separated files can be extracted with the provided code and auto-generated scripts provided by the web interface.
+<br><br>
+Selected sample and gene sets are displayed in the Search Results section. Under downloads scripts can be downloaded for the given gene sets. In case of gene sets a text file containing the gene symbols is provided.
+<br><br>
+Gene sets can be exported to Enrichr for further analysis.
+</p>
+</div>
+</div>
+
+<h4 id="chromeextension">Chrome Extension</h4>
+<p style="font-size: 14px;">
+The ARCHS<sup>4</sup> chrome extension is a browser extension that adds content to the landing pages of RNA-seq datasets available on the Gene Expression Omnibus (GEO) when samples have been processed by ARCHS<sup>4</sup>. The extension adds links to download files that contain the aligned reads mapped to genes with counts, as well as a heatmap visualization summary of the expression data from the processed samples using Clustergrammer. The ARCHS4 Chrome extension installed from the <a href="https://chrome.google.com/webstore/detail/archs4/ognafeffndmmiliegaamoockceneedea" target="_blank">Chrome web store</a>. An example of an enhanced GEO landing page for series <a href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE77243">GSE77243</a> is shown.
+</p>
+<br>
+
+<h4 id="genelanding">Gene landing pages</h4>
+<p style="font-size: 14px;">
+Gene landing pages are accessible through the search fields on the top right of the ARCHS4 interface. Genes can be searched by Entrez gene symbol. The gene search returns the expression distribution for major tissues and cell lines and predictions of biological function and regulatory properties of the target gene. If a gene is previously known to be part of a predicted gene set the terms are marked in green. If a gene has sufficient number of prior knowledge annotations a ROC curve shows how well the prior knowledge about the gene can be recovered.
+</p>
+<hr>
+
+<h3  id="datavisualization">Data visualization <i class="glyphicon glyphicon-arrow-up" style="cursor:pointer; font-size: 16;" onclick="scrollPage('nav');"></i></h3>
+<h4 id="dataviewer">WebGL data viewer</h4>
+<div style="width: 900px; height: 420px;">
+<div style="float: left; height: 400px;">
+<img src="images/viewer.png" width="400" style="border: 1px solid black;">
+</div>
+<div style="float: left; padding-left: 20px; width: 480px; height: 400px;">
+<p style="font-size: 14px;">
+The data view port displays samples or genes relative to the other samples and genes in the dataset. Samples/Genes with similar expression are clustered. The layout is computed with t-SNE.
+<br><br>
+The visualization is dynamic and allows rotation and zooming. The two icons on the top right are the manual selection tool and a toggle button that moves the view port into a smaller window to the left of the webpage.
+<br><br>
+The colors of samples and gene sets can be modified in the result section.
+</p>
+</div>
+</div>
+<br>
+<h4 id="vieweroptions">Viewer options</h4>
+<div style="width: 900px; height: 280px;">
+<div style="float: left; height: 280px;">
+<img src="images/viewoption.png" width="400" style="border: 1px solid black;">
+</div>
+<div style="float: left; padding-left: 20px; width: 480px; height: 280px;">
+<p style="font-size: 14px;">
+The data view can display 4 precalculated data visualizations: human samples, human genes, mouse samples and mouse genes. To toggle between species, select either the human or mouse button on the left. To change from sample view to gene view select one of the yellow buttons. A new view will automatically be loaded on selection. Prior selections are saved and will be loaded again if the former mode is selected.
+<br><br>
+The colors of sample and gene sets can be modified in the result section.
+</p>
+</div>
+</div>
+
+<h4 id="viewerinteraction">Viewer user interaction</h4>
+<p style="font-size: 14px;">
+The visualization is dynamic an allows rotation and zoom. The two icons on the top right are the manual selection tool and a toggle button that moves the view port into a smaller window to the left of the webpage.
+</p>
+<hr>
+
+<h3 id="datahandling">Data handling <i class="glyphicon glyphicon-arrow-up" style="cursor:pointer; font-size: 16;" onclick="scrollPage('nav');"></i></h3>
+<h4 id="abouth5">About the H5 file format</h4>
+<p style="font-size: 14px;">
+Hierarchical Data Format (HDF) is an open source file format for large data storage. It allows programmatic accessibility of matrix entries based on column and row indices while allowing for efficient data compression. The H5 files provided by ARCHS<sup>4</sup> contain raw read counts as well as detailed meta data information extracted from GEO.
+<br>
+<div style="text-align: center;">
+<iframe width="560" height="315" src="https://www.youtube.com/embed/TjkWSBQuKoE" frameborder="0" allowfullscreen></iframe>
+</div>
+<hr>
+<br>
+
+<div style="border: 1px solid #009361; width: 630px; text-align: center;">
+<table cellspacing="20" align="center">
+  <tr> <th>  </th> <th> group </th> <th> name </th> <th> otype </th> <th> dclass </th> <th> dim </th>  </tr>
+  <tbody>
+<tr>
+<td style='text-align: left;'>0</td>
+<td style='text-align: center;'>/</td>
+<td style='text-align: center;'>data</td>
+<td style='text-align: center;'>H5I_GROUP</td>
+<td style='text-align: center;'></td>
+<td style='text-align: center;'></td>
+</tr>
+<tr>
+<td style='text-align: left;'>1</td>
+<td style='text-align: center;'>/data</td>
+<td style='text-align: center;'>expression</td>
+<td style='text-align: center;'>H5I_DATASET</td>
+<td style='text-align: center;'>INTEGER</td>
+<td style='text-align: center;'>35238 x 65429</td>
+</tr>
+<tr>
+<td style='text-align: left;'>2</td>
+<td style='text-align: center;'>/</td>
+<td style='text-align: center;'>info</td>
+<td style='text-align: center;'>H5I_GROUP</td>
+<td style='text-align: center;'></td>
+<td style='text-align: center;'></td>
+</tr>
+<tr>
+<td style='text-align: left;'>3</td>
+<td style='text-align: center;'>/info</td>
+<td style='text-align: center;'>author</td>
+<td style='text-align: center;'>H5I_DATASET</td>
+<td style='text-align: center;'>STRING</td>
+<td style='text-align: center;'>1</td>
+</tr>
+<tr>
+<td style='text-align: left;'>4</td>
+<td style='text-align: center;'>/info</td>
+<td style='text-align: center;'>contact</td>
+<td style='text-align: center;'>H5I_DATASET</td>
+<td style='text-align: center;'>STRING</td>
+<td style='text-align: center;'>1</td>
+</tr>
+<tr>
+<td style='text-align: left;'>5</td>
+<td style='text-align: center;'>/info</td>
+<td style='text-align: center;'>creation-date</td>
+<td style='text-align: center;'>H5I_DATASET</td>
+<td style='text-align: center;'>STRING</td>
+<td style='text-align: center;'>1</td>
+</tr>
+<tr>
+<td style='text-align: left;'>6</td>
+<td style='text-align: center;'>/info</td>
+<td style='text-align: center;'>lab</td>
+<td style='text-align: center;'>H5I_DATASET</td>
+<td style='text-align: center;'>STRING</td>
+<td style='text-align: center;'>1</td>
+</tr>
+<tr>
+<td style='text-align: left;'>7</td>
+<td style='text-align: center;'>/info</td>
+<td style='text-align: center;'>version</td>
+<td style='text-align: center;'>H5I_DATASET</td>
+<td style='text-align: center;'>STRING</td>
+<td style='text-align: center;'>1</td>
+</tr>
+<tr>
+<td style='text-align: left;'>8</td>
+<td style='text-align: center;'>/</td>
+<td style='text-align: center;'>meta</td>
+<td style='text-align: center;'>H5I_GROUP</td>
+<td style='text-align: center;'></td>
+<td style='text-align: center;'></td>
+</tr>
+<tr>
+<td style='text-align: left;'>9</td>
+<td style='text-align: center;'>/meta</td>
+<td style='text-align: center;'>Sample_channel_count</td>
+<td style='text-align: center;'>H5I_DATASET</td>
+<td style='text-align: center;'>STRING</td>
+<td style='text-align: center;'>65429</td>
+</tr>
+<tr>
+<td style='text-align: left;'>10</td>
+<td style='text-align: center;'>/meta</td>
+<td style='text-align: center;'>Sample_characteristics_ch1</td>
+<td style='text-align: center;'>H5I_DATASET</td>
+<td style='text-align: center;'>STRING</td>
+<td style='text-align: center;'>65429</td>
+</tr>
+<tr>
+<td style='text-align: left;'>11</td>
+<td style='text-align: center;'>/meta</td>
+<td style='text-align: center;'>Sample_contact_address</td>
+<td style='text-align: center;'>H5I_DATASET</td>
+<td style='text-align: center;'>STRING</td>
+<td style='text-align: center;'>65429</td>
+</tr>
+<tr>
+<td style='text-align: left;'>12</td>
+<td style='text-align: center;'>/meta</td>
+<td style='text-align: center;'>Sample_contact_city</td>
+<td style='text-align: center;'>H5I_DATASET</td>
+<td style='text-align: center;'>STRING</td>
+<td style='text-align: center;'>65429</td>
+</tr>
+<tr>
+<td style='text-align: left;'>13</td>
+<td style='text-align: center;'>/meta</td>
+<td style='text-align: center;'>Sample_contact_country</td>
+<td style='text-align: center;'>H5I_DATASET</td>
+<td style='text-align: center;'>STRING</td>
+<td style='text-align: center;'>65429</td>
+</tr>
+<tr>
+<td style='text-align: left;'>14</td>
+<td style='text-align: center;'>/meta</td>
+<td style='text-align: center;'>Sample_contact_department</td>
+<td style='text-align: center;'>H5I_DATASET</td>
+<td style='text-align: center;'>STRING</td>
+<td style='text-align: center;'>65429</td>
+</tr>
+<tr>
+<td style='text-align: left;'>15</td>
+<td style='text-align: center;'>/meta</td>
+<td style='text-align: center;'>Sample_contact_email</td>
+<td style='text-align: center;'>H5I_DATASET</td>
+<td style='text-align: center;'>STRING</td>
+<td style='text-align: center;'>65429</td>
+</tr>
+<tr>
+<td style='text-align: left;'>16</td>
+<td style='text-align: center;'>/meta</td>
+<td style='text-align: center;'>Sample_contact_institute</td>
+<td style='text-align: center;'>H5I_DATASET</td>
+<td style='text-align: center;'>STRING</td>
+<td style='text-align: center;'>65429</td>
+</tr>
+<tr>
+<td style='text-align: left;'>17</td>
+<td style='text-align: center;'>/meta</td>
+<td style='text-align: center;'>Sample_contact_laboratory</td>
+<td style='text-align: center;'>H5I_DATASET</td>
+<td style='text-align: center;'>STRING</td>
+<td style='text-align: center;'>65429</td>
+</tr>
+<tr>
+<td style='text-align: left;'>18</td>
+<td style='text-align: center;'>/meta</td>
+<td style='text-align: center;'>Sample_contact_name</td>
+<td style='text-align: center;'>H5I_DATASET</td>
+<td style='text-align: center;'>STRING</td>
+<td style='text-align: center;'>65429</td>
+</tr>
+<tr>
+<td style='text-align: left;'>19</td>
+<td style='text-align: center;'>/meta</td>
+<td style='text-align: center;'>Sample_contact_phone</td>
+<td style='text-align: center;'>H5I_DATASET</td>
+<td style='text-align: center;'>STRING</td>
+<td style='text-align: center;'>65429</td>
+</tr>
+<tr>
+<td style='text-align: left;'>20</td>
+<td style='text-align: center;'>/meta</td>
+<td style='text-align: center;'>Sample_contact_zip-postal_code</td>
+<td style='text-align: center;'>H5I_DATASET</td>
+<td style='text-align: center;'>STRING</td>
+<td style='text-align: center;'>65429</td>
+</tr>
+<tr>
+<td style='text-align: left;'>21</td>
+<td style='text-align: center;'>/meta</td>
+<td style='text-align: center;'>Sample_data_processing</td>
+<td style='text-align: center;'>H5I_DATASET</td>
+<td style='text-align: center;'>STRING</td>
+<td style='text-align: center;'>65429</td>
+</tr>
+<tr>
+<td style='text-align: left;'>22</td>
+<td style='text-align: center;'>/meta</td>
+<td style='text-align: center;'>Sample_data_row_count</td>
+<td style='text-align: center;'>H5I_DATASET</td>
+<td style='text-align: center;'>STRING</td>
+<td style='text-align: center;'>65429</td>
+</tr>
+<tr>
+<td style='text-align: left;'>23</td>
+<td style='text-align: center;'>/meta</td>
+<td style='text-align: center;'>Sample_description</td>
+<td style='text-align: center;'>H5I_DATASET</td>
+<td style='text-align: center;'>STRING</td>
+<td style='text-align: center;'>65429</td>
+</tr>
+<tr>
+<td style='text-align: left;'>24</td>
+<td style='text-align: center;'>/meta</td>
+<td style='text-align: center;'>Sample_extract_protocol_ch1</td>
+<td style='text-align: center;'>H5I_DATASET</td>
+<td style='text-align: center;'>STRING</td>
+<td style='text-align: center;'>65429</td>
+</tr>
+<tr>
+<td style='text-align: left;'>25</td>
+<td style='text-align: center;'>/meta</td>
+<td style='text-align: center;'>Sample_geo_accession</td>
+<td style='text-align: center;'>H5I_DATASET</td>
+<td style='text-align: center;'>STRING</td>
+<td style='text-align: center;'>65429</td>
+</tr>
+<tr>
+<td style='text-align: left;'>26</td>
+<td style='text-align: center;'>/meta</td>
+<td style='text-align: center;'>Sample_instrument_model</td>
+<td style='text-align: center;'>H5I_DATASET</td>
+<td style='text-align: center;'>STRING</td>
+<td style='text-align: center;'>65429</td>
+</tr>
+<tr>
+<td style='text-align: left;'>27</td>
+<td style='text-align: center;'>/meta</td>
+<td style='text-align: center;'>Sample_last_update_date</td>
+<td style='text-align: center;'>H5I_DATASET</td>
+<td style='text-align: center;'>STRING</td>
+<td style='text-align: center;'>65429</td>
+</tr>
+<tr>
+<td style='text-align: left;'>28</td>
+<td style='text-align: center;'>/meta</td>
+<td style='text-align: center;'>Sample_library_selection</td>
+<td style='text-align: center;'>H5I_DATASET</td>
+<td style='text-align: center;'>STRING</td>
+<td style='text-align: center;'>65429</td>
+</tr>
+<tr>
+<td style='text-align: left;'>29</td>
+<td style='text-align: center;'>/meta</td>
+<td style='text-align: center;'>Sample_library_source</td>
+<td style='text-align: center;'>H5I_DATASET</td>
+<td style='text-align: center;'>STRING</td>
+<td style='text-align: center;'>65429</td>
+</tr>
+<tr>
+<td style='text-align: left;'>30</td>
+<td style='text-align: center;'>/meta</td>
+<td style='text-align: center;'>Sample_library_strategy</td>
+<td style='text-align: center;'>H5I_DATASET</td>
+<td style='text-align: center;'>STRING</td>
+<td style='text-align: center;'>65429</td>
+</tr>
+<tr>
+<td style='text-align: left;'>31</td>
+<td style='text-align: center;'>/meta</td>
+<td style='text-align: center;'>Sample_molecule_ch1</td>
+<td style='text-align: center;'>H5I_DATASET</td>
+<td style='text-align: center;'>STRING</td>
+<td style='text-align: center;'>65429</td>
+</tr>
+<tr>
+<td style='text-align: left;'>32</td>
+<td style='text-align: center;'>/meta</td>
+<td style='text-align: center;'>Sample_organism_ch1</td>
+<td style='text-align: center;'>H5I_DATASET</td>
+<td style='text-align: center;'>STRING</td>
+<td style='text-align: center;'>65429</td>
+</tr>
+<tr>
+<td style='text-align: left;'>33</td>
+<td style='text-align: center;'>/meta</td>
+<td style='text-align: center;'>Sample_platform_id</td>
+<td style='text-align: center;'>H5I_DATASET</td>
+<td style='text-align: center;'>STRING</td>
+<td style='text-align: center;'>65429</td>
+</tr>
+<tr>
+<td style='text-align: left;'>34</td>
+<td style='text-align: center;'>/meta</td>
+<td style='text-align: center;'>Sample_relation</td>
+<td style='text-align: center;'>H5I_DATASET</td>
+<td style='text-align: center;'>STRING</td>
+<td style='text-align: center;'>65429</td>
+</tr>
+<tr>
+<td style='text-align: left;'>35</td>
+<td style='text-align: center;'>/meta</td>
+<td style='text-align: center;'>Sample_series_id</td>
+<td style='text-align: center;'>H5I_DATASET</td>
+<td style='text-align: center;'>STRING</td>
+<td style='text-align: center;'>65429</td>
+</tr>
+<tr>
+<td style='text-align: left;'>36</td>
+<td style='text-align: center;'>/meta</td>
+<td style='text-align: center;'>Sample_source_name_ch1</td>
+<td style='text-align: center;'>H5I_DATASET</td>
+<td style='text-align: center;'>STRING</td>
+<td style='text-align: center;'>65429</td>
+</tr>
+<tr>
+<td style='text-align: left;'>37</td>
+<td style='text-align: center;'>/meta</td>
+<td style='text-align: center;'>Sample_status</td>
+<td style='text-align: center;'>H5I_DATASET</td>
+<td style='text-align: center;'>STRING</td>
+<td style='text-align: center;'>65429</td>
+</tr>
+<tr>
+<td style='text-align: left;'>38</td>
+<td style='text-align: center;'>/meta</td>
+<td style='text-align: center;'>Sample_submission_date</td>
+<td style='text-align: center;'>H5I_DATASET</td>
+<td style='text-align: center;'>STRING</td>
+<td style='text-align: center;'>65429</td>
+</tr>
+<tr>
+<td style='text-align: left;'>39</td>
+<td style='text-align: center;'>/meta</td>
+<td style='text-align: center;'>Sample_supplementary_file_1</td>
+<td style='text-align: center;'>H5I_DATASET</td>
+<td style='text-align: center;'>STRING</td>
+<td style='text-align: center;'>65429</td>
+</tr>
+<tr>
+<td style='text-align: left;'>40</td>
+<td style='text-align: center;'>/meta</td>
+<td style='text-align: center;'>Sample_supplementary_file_2</td>
+<td style='text-align: center;'>H5I_DATASET</td>
+<td style='text-align: center;'>STRING</td>
+<td style='text-align: center;'>65429</td>
+</tr>
+<tr>
+<td style='text-align: left;'>41</td>
+<td style='text-align: center;'>/meta</td>
+<td style='text-align: center;'>Sample_taxid_ch1</td>
+<td style='text-align: center;'>H5I_DATASET</td>
+<td style='text-align: center;'>STRING</td>
+<td style='text-align: center;'>65429</td>
+</tr>
+<tr>
+<td style='text-align: left;'>42</td>
+<td style='text-align: center;'>/meta</td>
+<td style='text-align: center;'>Sample_title</td>
+<td style='text-align: center;'>H5I_DATASET</td>
+<td style='text-align: center;'>STRING</td>
+<td style='text-align: center;'>65429</td>
+</tr>
+<tr>
+<td style='text-align: left;'>43</td>
+<td style='text-align: center;'>/meta</td>
+<td style='text-align: center;'>Sample_type</td>
+<td style='text-align: center;'>H5I_DATASET</td>
+<td style='text-align: center;'>STRING</td>
+<td style='text-align: center;'>65429</td>
+</tr>
+<tr>
+<td style='border-bottom: 2px solid grey; text-align: left;'>44</td>
+<td style='border-bottom: 2px solid grey; text-align: center;'>/meta</td>
+<td style='border-bottom: 2px solid grey; text-align: center;'>genes</td>
+<td style='border-bottom: 2px solid grey; text-align: center;'>H5I_DATASET</td>
+<td style='border-bottom: 2px solid grey; text-align: center;'>STRING</td>
+<td style='border-bottom: 2px solid grey; text-align: center;'>35238</td>
+</tr>
+</tbody>
+</table>
+</div>
+</p>
+<br>
+
+<h4 id="generatedscript">Using the auto-generated download script</h4>
+<p>
+Scripts to extract tab separated gene expression files can be created through the graphical user interface of ARCHS<sup>4</sup>. The script has to be executed as a R-script. A free version of R can be downloaded at <a href="https://www.rstudio.com/products/rstudio/download2/">www.rstudio.com</a>. Upon execution the script should install all required dependencies and download the full gene expression file. 
+</p>
+<pre class="prettyprint" style="padding:10px;">
+<code>
+# R script to download selected samples
+# Copy code and run on a local machine to initiate download
+# Check for dependencies and install if missing
+packages <- c("rhdf5")
+if (length(setdiff(packages, rownames(installed.packages()))) > 0) {
+    print("Install required packages")
+    source("https://bioconductor.org/biocLite.R")
+    biocLite("rhdf5")
+}
+library("rhdf5")
+
+destination_file = "human_matrix.h5"
+extracted_expression_file = "example_expression_matrix.tsv"
+
+# Check if gene expression file was already downloaded, if not in current directory download file form repository
+if(!file.exists(destination_file)){
+    print("Downloading compressed gene expression matrix.")
+    url = "https://s3.amazonaws.com/mssm-seq-matrix/human_matrix.h5"
+    download.file(url, destination_file, quiet = FALSE)
+} else{
+    print("Local file already exists.")
+}
+
+# Selected samples to be extracted
+samp = c("GSM1224927","GSM1066120","GSM1224923","GSM1224929","GSM1224924","GSM1066118","GSM1066119","GSM1224925","GSM1224930","GSM1872071","GSM2282084","GSM1872064","GSM1872067","GSM1704845")
+
+# Retrieve information from compressed data
+samples = h5read(destination_file, "meta/Sample_geo_accession")
+# Identify columns to be extracted
+sample_locations = which(samples %in% samp)
+
+tissue = h5read(destination_file, "meta/Sample_source_name_ch1")
+genes = h5read(destination_file, "meta/genes")
+series = h5read(destination_file, "meta/Sample_series_id")
+
+# extract gene expression from compressed data
+expression = h5read(destination_file, "data/expression", index=list(1:length(genes), sample_locations))
+H5close()
+rownames(expression) = genes
+colnames(expression) = samples[sample_locations]
+
+# Print file
+write.table(expression, file=extracted_expression_file, sep="\t", quote=FALSE)
+print(paste0("Expression file was created at ", getwd(), "/", extracted_expression_file))
+</code>
+</pre>
+<br>
+
+<h4 id="parsingh5">Parsing H5 file</h4>
+
+<p>
+Scripts to extract tab separated gene expression files can be created through the graphical user interface of ARCHS<sup>4</sup>. The script has to be executed as an R-script. A free version of R can be downloaded from: <a href="https://www.rstudio.com/products/rstudio/download2/">www.rstudio.com</a>. Upon execution the script should install all required dependencies, and then download the full gene expression file before extracting the selected samples. 
+</p>
+<pre class="prettyprint" style="padding:10px;">
+<code>
+# R script to download selected samples
+# Copy code and run on a local machine to initiate download
+# Check for dependencies and install if missing
+packages <- c("rhdf5", "preprocessCore")
+if (length(setdiff(packages, rownames(installed.packages()))) > 0) {
+    print("Install required packages")
+    source("https://bioconductor.org/biocLite.R")
+    biocLite("rhdf5")
+    biocLite("preprocessCore")
+}
+library("rhdf5")
+library("preprocessCore")
+
+destination_file = "human_matrix.h5"
+extracted_expression_file = "example_expression_matrix.tsv"
+
+# Check if gene expression file was already downloaded, if not in current directory download file form repository
+if(!file.exists(destination_file)){
+    print("Downloading compressed gene expression matrix.")
+    url = "https://s3.amazonaws.com/mssm-seq-matrix/human_matrix.h5"
+    download.file(url, destination_file, quiet = FALSE)
+} else{
+    print("Local file already exists.")
+}
+
+# Selected samples to be extracted
+samp = c("GSM1224927","GSM1066120","GSM1224923","GSM1224929","GSM1224924","GSM1066118","GSM1066119","GSM1224925","GSM1224930","GSM1872071","GSM2282084","GSM1872064","GSM1872067","GSM1704845")
+
+# Retrieve information from compressed data
+samples = h5read(destination_file, "meta/Sample_geo_accession")
+
+# Identify columns to be extracted
+sample_locations = which(samples %in% samp)
+
+tissue = h5read(destination_file, "meta/Sample_source_name_ch1")
+genes = h5read(destination_file, "meta/genes")
+series = h5read(destination_file, "meta/Sample_series_id")
+
+# extract gene expression from compressed data
+expression = h5read(destination_file, "data/expression", index=list(1:length(genes), sample_locations))
+H5close()
+
+# normalize samples and correct for differences in gene count distribution
+expression = log2(expression+1)
+expression = normalize.quantiles(expression)
+
+rownames(expression) = genes
+colnames(expression) = samples[sample_locations]
+</code>
+</pre>
+<br>
+
+<h4 id="batcheffect">Batch effect correction</h4>
+<p>
+Extracted samples from a specified tissue can originate from multiple series with slightly different experimental conditions. If desired batch effects from gene expression can be removed with the Combat library.
+</p>
+<div style="text-align: center;">
+<iframe width="560" height="315" src="https://www.youtube.com/embed/3wjbxDex7_8" frameborder="0" allowfullscreen></iframe>
+</div>
+<br>
+<pre class="prettyprint" style="padding:10px;">
+<code>
+# R script to download selected samples
+# Copy code and run on a local machine to initiate download
+# Check for dependencies and install if missing
+packages <- c("rhdf5", "preprocessCore", "sva")
+if (length(setdiff(packages, rownames(installed.packages()))) > 0) {
+    print("Install required packages")
+    source("https://bioconductor.org/biocLite.R")
+    biocLite("rhdf5")
+    biocLite("preprocessCore")
+    biocLite("sva")
+}
+library("rhdf5")
+library("preprocessCore")
+library("sva")
+
+destination_file = "human_matrix.h5"
+extracted_expression_file = "example_expression_matrix.tsv"
+
+# Check if gene expression file was already downloaded, if not in current directory download file form repository
+if(!file.exists(destination_file)){
+    print("Downloading compressed gene expression matrix.")
+    url = "https://s3.amazonaws.com/mssm-seq-matrix/human_matrix.h5"
+    download.file(url, destination_file, quiet = FALSE)
+} else{
+    print("Local file already exists.")
+}
+
+# Selected samples to be extracted
+samp = c("GSM1224927","GSM1066120","GSM1224923","GSM1224929","GSM1224924","GSM1066118","GSM1066119","GSM1224925","GSM1224930","GSM1872071","GSM2282084","GSM1872064","GSM1872067","GSM1704845")
+
+# Retrieve information from compressed data
+samples = h5read(destination_file, "meta/Sample_geo_accession")
+# Identify columns to be extracted
+sample_locations = which(samples %in% samp)
+
+tissue = h5read(destination_file, "meta/Sample_source_name_ch1")
+genes = h5read(destination_file, "meta/genes")
+series = h5read(destination_file, "meta/Sample_series_id")
+series = series[sample_locations]
+
+# extract gene expression from compressed data
+expression = h5read(destination_file, "data/expression", index=list(1:length(genes), sample_locations))
+H5close()
+
+# normalize samples and correct for differences in gene count distribution
+expression = log2(expression+1)
+expression = normalize.quantiles(expression)
+
+rownames(expression) = genes
+colnames(expression) = samples[sample_locations]
+
+# correct batch effects in gene expression
+batchid = match(series, unique(series))
+correctedExpression <- ComBat(dat=expression, batch=batchid, par.prior=TRUE, prior.plots=FALSE)
+</code>
+</pre>
+
+
+<hr>
+
+<h3 id="searchtools">Search tools <i class="glyphicon glyphicon-arrow-up" style="cursor:pointer; font-size: 16;" onclick="scrollPage('nav');"></i></h3>
+<h4 id="metadatasearch">Meta data search</h4>
+<div style="width: 900px; height: 420px;">
+<div style="float: left; height: 280px;">
+<img src="images/metasearch.png" width="400" style="border: 1px solid black;">
+</div>
+<div style="float: left; padding-left: 20px; width: 480px; height: 280px;">
+<p style="font-size: 14px;">
+Metadata search parses the tissue description field from GEO to find matches with the entered search term. The search ignores spaces and is case insensitive. Results are highliged in the data viewer and a result is added to the result list.
+<br><br>
+We preselected a series of cellular tissues based by cellular system. This allows simple browsing of the data for tissues of interest. Some tissue selections can return empty for either mouse or human samples.
+</p>
+</div>
+</div>
+<br>
+
+<h4 id="signaturesearch">Signature search</h4>
+<div style="width: 900px; height: 420px;">
+<div style="float: left; height: 280px; width:400px;">
+<img src="images/sigsearch.png" width="300" style="border: 1px solid black;">
+</div>
+<div style="float: left; padding-left: 20px; width: 480px; height: 280px;">
+<p style="font-size: 14px;">
+Signature search uses a list of high expressed genes and low expressed genes and identifies samples that match the given input. The gene expression is z-score normalized across samples to identify the relative gene expression.
+</p>
+</div>
+</div>
+<br>
+<br>
+
+<h4 id="enrichmentsearch">Enrichment search</h4>
+<div style="width: 900px; height: 420px;">
+<div style="float: left; height: 280px;">
+<img src="images/enrichment.png" width="400" style="border: 1px solid black;">
+</div>
+<div style="float: left; padding-left: 20px; width: 480px; height: 280px;">
+<p style="font-size: 14px;">
+Enrichment search highlights samples that are enriched in gene sets from 8 gene set libraries (CHEA 2016, KEA 2016, Encode TF ChIP-seq 2016, KEGG 2016, MGI mammalian phenotype, Human phenotype, GO Biological Process, GO cellular component, GO molecular function)
+</p>
+</div>
+</div>
+
+
+<h4 id="genesearch">Gene search</h4>
+<div style="width: 900px; height: 420px;">
+<div style="float: left; height: 280px;">
+<img src="images/genesearch.png" width="400" style="border: 1px solid black;">
+</div>
+<div style="float: left; padding-left: 20px; width: 480px; height: 280px;">
+<p style="font-size: 14px;">
+Open gene landing page when searching by gene symbol. A set of genes can be highlighted by selecting a gene set library and a corresponding gene set.
+</p>
+</div>
+</div>
+
+
+
+<hr>
+
+<h3 id="genepages">Gene pages <i class="glyphicon glyphicon-arrow-up" style="cursor:pointer; font-size: 16;" onclick="scrollPage('nav');"></i></h3>
+
+<h4 id="functionalprediction">Functional prediction</h4>
+<div style="width: 900px; height: 420px;">
+<div style="float: left; height: 280px;">
+<img src="images/prediction.png" width="400" style="border: 1px solid black;">
+</div>
+<div style="float: left; padding-left: 20px; width: 480px; height: 280px;">
+<p style="font-size: 14px;">
+The top 100 predictions of gene set membership accross multiple domains is shown in the tables on the gene page. Gene set membership is predicted by membership by association. If a gene shares high correlation with known members of a gene set it will get a high z-score during the membership perediction. If a gene already has known functions/gene set memberships they are highlighted in green. If a gene is extensively annotated a ROC curve shows how well known annotations could be recovered by the algorithm. If there is no image the gene has not enough prior gene memberships to build a reliable ROC curve.
+</p>
+</div>
+</div>
+
+<h4 id="correlation">Gene correlation</h4>
+<div style="width: 900px; height: 220px;">
+<div style="float: left; height: 220px;">
+<img src="images/correlation.png" width="400" style="border: 1px solid black;">
+</div>
+<div style="float: left; padding-left: 20px; width: 480px; height: 220px;">
+<p style="font-size: 14px;">
+The gene correlation table contains the 100 most correlated genes to the gene of interest. The Pearson correlation is calculated over all samples and tissues. The gene list can be uploaded to Enrichr for further investigation.
+</p>
+</div>
+</div>
+
+
+<h4 id="atlas">Tissue expression atlas</h4>
+<div style="width: 900px; height: 320px;">
+<div style="float: left; height: 280px;">
+<img src="images/tissue.png" width="400" style="border: 1px solid black;">
+</div>
+<div style="float: left; padding-left: 20px; width: 480px; height: 280px;">
+<p style="font-size: 14px;">
+The tissue and cell line expression atlas are calculated from samples in ARCHS4. The tissues are grouped in multiple levels and cover a wide range of different cellular contexts. Since samples of any given tissue can come from many distinct laboratoeries condition upon sample creation are not identical and various subtypes of tissues can be mixed. This in comparison to GTEx can report the observed variability in non homogenious sample groups.
+</p>
+</div>
+</div>
+
+
+
+<hr>
+
+<h3 id="terms">Terms of use <i class="glyphicon glyphicon-arrow-up" style="cursor:pointer; font-size: 16;" onclick="scrollPage('nav');"></i></h3>
+
+<h4>Use</h4>
+
+<a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a> This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution 4.0 International License</a>.
+<br>All data is free to use for non-commercial purposes. For commercial use please contact <a href="http://www.ip.mountsinai.org/">MSIP</a>.
+<h4>Citation</h4>
+
+Within any publication that uses any methods or results inspired by ARCHS<sup>4</sup>, please cite:<br>
+<a href="http://www.biorxiv.org/content/early/2017/09/15/189092">http://www.biorxiv.org/content/early/2017/09/15/189092</a>
+<br><br>
+ARCHS4 is not yet peer reviewed.
+
+<h4>Disclaimer</h4>
+ARCHS<sup>4</sup> is not to be used for treating or diagnosing human subjects.
+
+ARCHS<sup>4</sup> or any documents available from this server are provided as is without any warranty of any kind, either express, implied, or statutory, including, but not limited to, any implied warranties of merchantability, fitness for particular purpose and freedom from infringement, or that ARCHS<sup>4</sup> or any documents available from this server will be error free. The Ma'ayan lab makes no representations that the use of ARCHS<sup>4</sup> or any documents available from this server will not infringe any patent or proprietary rights of third parties.
+
+In no event will the Ma'ayan lab or any of its members be liable for any damages, including but not limited to direct, indirect, special or consequential damages, arising out of, resulting from, or in any way connected with the use of ARCHS<sup>4</sup> or documents available from this server.
+
+
+</div>
+<br>
+</div>
+<br>
+
+<style>
+.fl a {
+  text-decoration: none;
+  color: #000;
+
+  -webkit-transition: font-size 0.3s ease, background-color 0.3s ease;
+  -moz-transition: font-size 0.3s ease, background-color 0.3s ease;
+  -o-transition: font-size 0.3s ease, background-color 0.3s ease;
+  -ms-transition: font-size 0.3s ease, background-color 0.3s ease;
+  transition: font-size 0.3s ease, background-color 0.3s ease;
+  display: block;
+}
+
+.fl a:hover {
+  font-weight: bolder;
+  color: #45c19f;
+}
+</style>
+
+<div style="padding:10px; padding-top:10px; padding-bottom: 0px; background-color:#F8F8F8; height:130px; border-top: 1px solid #E7E7E7; text-align: center;">
+<div style="width: 940px; padding-left: 0px; margin: auto;">
+    <div style="float: left; width:260px; padding-left:10px;">
+       <img src="images/mountsinai.png" style="padding-bottom:10px;" height=100><br>
+    </div>
+    
+    <div style="float: left;">
+         <ul style="padding-left: 30px; list-style: none; text-align: left;">
+            <li class="fl"><a href="http://icahn.mssm.edu/research/labs/maayan-laboratory" target="_blank">The Ma'ayan Lab</a></li>
+            <li class="fl"><a href="http://www.lincs-dcic.org/" target="_blank">BD2K-LINCS Data Coordination and Integration Center (DCIC)</a></li>
+            <li class="fl"><a href="http://www.lincsproject.org/">NIH LINCS program</a></li>
+            <li class="fl"><a href="http://bd2k.nih.gov/" target="_blank">NIH Big Data to Knowledge (BD2K)</a></li>
+            <li class="fl"><a href="https://commonfund.nih.gov/idg/index" target="_blank">NIH Illuminating the Druggable Genome (IDG) Program</a></li>
+            <li class="fl"><a href="http://icahn.mssm.edu/" target="_blank">Icahn School of Medicine at Mount Sinai</a></li>
+        </ul>
+    </div>
+    <div style="float: right; color: grey;">
+        <img src="images/dcic.png" height=100><br>
+        © Ma'ayan Lab.
+    </div>
+</div>
+</div>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-6277639-31', 'auto');
+  ga('send', 'pageview');
+
+</script>
+<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+
+
+<script>
+    $.getJSON("search/getGenes.php", function(data){
+        var genes = data;
+        $("#genesymbolsearch").autoComplete({
+            minChars: 3,
+            source: function(term, suggest){
+                term = term.toLowerCase();
+                var choices = genes;
+                var matches = [];
+                for (i=0; i<choices.length; i++)
+                    if (~choices[i].toLowerCase().indexOf(term)) matches.push(choices[i]);
+                suggest(matches);
+            }
+        });
+    });
+</script>
+
+
+
+
+</body>
+</html>
+

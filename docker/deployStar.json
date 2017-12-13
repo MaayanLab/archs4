@@ -1,0 +1,44 @@
+{
+  "id": "/aligner",
+  "cmd": null,
+  "cpus": 4,
+  "mem": 30000,
+  "disk": 20000,
+  "instances": 1,
+  "container": {
+    "type": "DOCKER",
+    "volumes": [
+      {
+        "containerPath": "/alignment/data",
+        "hostPath": "/data/seqdata",
+        "mode": "RW"
+      }
+    ],
+    "docker": {
+      "image": "maayanlab/aligner",
+      "network": "BRIDGE",
+      "portMappings": [
+        {
+          "containerPort": 3000,
+          "hostPort": 0,
+          "servicePort": 10065,
+          "protocol": "tcp",
+          "labels": {}
+        }
+      ],
+      "privileged": false,
+      "parameters": [],
+      "forcePullImage": true
+    }
+  },
+  "labels": {
+    "public": "false"
+  },
+  "portDefinitions": [
+    {
+      "port": 10065,
+      "protocol": "tcp",
+      "labels": {}
+    }
+  ]
+}

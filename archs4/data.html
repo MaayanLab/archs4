@@ -1,0 +1,376 @@
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Alexander Lachmann">
+    <title>ARCHS4</title>
+    
+    <link rel="icon" href="images/archs-icon.png?v=2" type="image/png">
+
+    <script
+      src="https://code.jquery.com/jquery-1.12.4.min.js"
+      integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ="
+      crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+
+    <script src="scripts/three.min.js"></script>
+    <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    
+    <!-- <script src="scripts/jquery-3.1.1.min.js"></script> -->
+    <script src="scripts/d3.layout.cloud.js"></script>
+    <script src="scripts/tags.js"></script>
+    <script src="scripts/prettify.js"></script>
+    <script src="scripts/clipboard.min.js"></script>
+    <script src="scripts/orbitcontrols.js"></script>
+    <script src="scripts/jquery.auto-complete.min.js"></script>
+    
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    
+    <link rel="stylesheet" href="css/jquery.auto-complete.css">
+    
+    <!-- <script type="text/javascript" src="http://www.json.org/json2.js"></script> -->
+    <link rel="stylesheet" type="text/css" href="css/spectrum.css">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    
+    <!-- <link rel="stylesheet" type="text/css" href="css/jquery-ui.css">-->
+
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <link rel="stylesheet" href="css/css.css">
+    
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+    
+    
+    <script src="scripts/spectrum.js"></script>
+    
+    
+    <script type="x-shader/x-vertex" id="vertexshader">
+        attribute vec3 customColor;
+        attribute float customFrequency;
+        varying vec3 vColor;
+        void main() 
+        {
+            vColor = customColor; // set color associated to vertex; use later in fragment shader
+            vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
+
+            // option (1): draw particles at constant size on screen
+            // gl_PointSize = size;
+            // option (2): scale particles as objects in 3D space
+            gl_PointSize = (customFrequency) * 8.0 * ( 300.0 / length( mvPosition.xyz ));
+            gl_Position = projectionMatrix * mvPosition;
+        }
+    </script>
+    <script type="x-shader/x-fragment" id="fragmentshader">
+        uniform sampler2D texture;
+        varying vec3 vColor; // colors associated to vertices; assigned by vertex shader
+        void main() 
+        {
+            // calculates a color for the particle
+            gl_FragColor = vec4( vColor, 1.0 );
+            // sets particle texture to desired color
+            gl_FragColor = gl_FragColor * texture2D( texture, gl_PointCoord );
+        }
+    </script>
+    
+    <style type="text/css">
+    
+    html{
+        height: 100%;
+        box-sizing: border-box;
+    }
+    body {
+        font-size: 100%;
+        margin: 0px;
+        padding: 0px;
+        font-family: 'Open Sans', sans-serif;
+        background-color: #f2fbfa;
+        background-image: url("images/congruent_pentagon2.png");
+        background-repeat: repeat;
+        min-height: 100%;
+        position: relative;
+        padding-bottom: 140px;
+    }
+    
+    *, ::after, ::before {
+        -webkit-box-sizing: inherit;
+        box-sizing: inherit;
+    }
+    
+    #container {
+        width:960px;
+        height:500px;
+    }
+    
+    </style>
+</head>
+
+<body>
+
+<div id="nav" style="margin-bottom: 5px; background-color: #F8F8F8; border-bottom: 1px solid #E7E7E7; height: 60px;">
+    <nav class="navbar navbar-default navbar-toggleable-md navbar-inverse container" role="navigation" style="width:1050px;">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse"
+                        data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" title="ARCHS4: All RNA-seq and Chip-seq Seqeuncing" href="index.html">
+                    <span>
+                        <img src="images/archs-42.png" width=160 style="padding-top: 3px;">
+                    </span>
+                    </a>
+            </div>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1" style="color:white;">
+                <ul class="nav navbar-nav">
+                    <li id="browse" class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown">Search<span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li role="presentation"><a data-toggle="tab" onclick="toggleSearch('meta')" href="#meta">Metadata</a></li>
+                            <li role="presentation"><a data-toggle="tab" onclick="toggleSearch('signature')" href="#signature">Signature</a></li>
+                            <li role="presentation"><a data-toggle="tab" onclick="toggleSearch('enrichment')" href="#enrichment">Enrichment</a></li>
+                        </ul>
+                    </li>
+                    <li id="browse" class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown">Visualize<span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a id="maxview" href="#">Maximize data view</a></li>
+                            <li><a id="minview" href="#">Minimize data view</a></li>
+                        </ul>
+                    </li>
+                    <li id="download"><a href="download.html">Download</a></li>
+
+                    <li id="chrome"><a href="https://chrome.google.com/webstore/detail/archs4/ognafeffndmmiliegaamoockceneedea" target="_blank">Chrome Extension</a></li>
+                    <li id="help"><a href="help.html">Help</a></li>
+                    
+                    <li id="twitter"><a href="#" onclick="window.open('https://twitter.com/intent/tweet?original_referer=https%3A%2F%2Fwww.biorxiv.org%2Fcontent%2Fearly%2F2017%2F09%2F15%2F189092&ref_src=twsrc%5Etfw&text=Massive%20Mining%20of%20Publicly%20Available%20RNA-seq%20Data%20from%20Human%20and%20Mouse&tw_p=tweetbutton&url=https%3A%2F%2Fwww.biorxiv.org%2Fcontent%2Fearly%2F2017%2F09%2F15%2F189092', 'newwindow', 'width=600, height=250'); return false;"><img id="animation-target" src="images/twitter.png" width="25" style="margin-top:-1px;"></a></li>
+                    
+                    <!--<li id="contribute"><a href="#contribute">Contribute</a></li>-->
+                </ul>
+                <form class="form-inline my-2 my-lg-0" style="padding-top: 6px; float: right; margin-right:-5px;" action="javascript:submitGeneSearch()">
+                  <input class="form-control mr-sm-2" id="genesymbolsearch" type="text" placeholder="Enter gene symbol...">
+                  <button class="btn btn-info my-2 my-sm-0" type="button" onclick="submitGeneSearch();">Search</button>
+                </form>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container-fluid -->
+    </nav>
+</div>
+
+<div style="width: 1000px; margin:0 auto; padding: 0px;">
+
+<div class="container" style="min-width: 1000px; padding: 0px 0px 0px 5px; margin: 0px;">
+    <div class="row">
+        <div id="left" class="col-sm-3 left" style="width: 340px;">
+            
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Species</h3>
+                </div>
+                <div class="panel-body" style="padding: 5px 5px 5px 5px;">
+                    <button id="humanSelect" class="modeButton" style="width: 65px; border: 4px solid red;"><img src="images/human_foot_small.png" style="padding-bottom: 0px;" id="foot-animation"/><br>Human</button>
+                    &nbsp;
+                    <button id="mouseSelect" class="modeButton" style="width: 65px; border: none;"><img src="images/mouse_foot_small.png" style="padding-bottom: 0px;"  id="foot-animation"/><br>Mouse</button>
+                    &nbsp;
+                    <button id="sampleSelect" class="modeButton" style="width: 65px; background-color: #ffb73a; border: 4px solid red;"><img src="images/sampleicon2.png" style="padding-bottom: 0px;"  id="foot-animation"/><br>Sample</button>
+                    &nbsp;
+                    <button id="geneSelect" class="modeButton" style="width: 65px; background-color: #ffb73a; border: none;"><img src="images/dnaicon2.png" style="padding-bottom: 0px;"  id="foot-animation"/><br>Gene</button>
+                </div>
+            </div>
+    
+            <div class="panel panel-default" style="min-height: 890px;">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Search</h3>
+                </div>
+                <div class="panel-body" id="tabcontainer" style="padding: 5px 10px 5px 10px;">
+                    <ul class="nav nav-tabs">
+                      <li id="metatab" role="presentation" class="active"><a data-toggle="tab" onclick="toggleSearch('meta')" href="#meta">Metadata</a></li>
+                      <li id="signaturetab" role="presentation"><a data-toggle="tab" onclick="toggleSearch('signature')" href="#signature">Signature</a></li>
+                      <li id="enrichmenttab" role="presentation"><a data-toggle="tab" onclick="toggleSearch('enrichment')" href="#enrichment">Enrichment</a></li>
+                    </ul>
+                    <div id="searchpane">
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="outer_center" class="col-sm-8">
+            <div class="panel panel-default" id="projection-box">
+            <div class="panel-heading" style="height: 40px;">
+                <h3 class="panel-title projection-head">t-SNE view</h3>
+                <span class="glyphicon glyphicon-resize-small projection-shrink" id="projection-resize" onclick="moveUp();" data-toggle="tooltip" title="Minimize/maximize sample/gene view."></span>
+                <span class="glyphicon glyphicon-scissors projection-shrink" id="projection-select" onclick="changeMouseMode();" data-toggle="tooltip" title="Manually select samples/genes in viewer by dragging the mouse while holding down left mouse button."></span>
+                
+                    
+                </div>
+                    <div class="panel-body" style="position: relative; padding:0px;">
+                        <div class="legendcontainer" id="legendcontainer">
+                            
+                            <div style="width: 180px;">
+                                <div style="width: 100px; float:left;">
+                                <h4 class="no-margin" id="speciesinfo">Human</h4>
+                                </div>
+                                <div id="calculating" style="float:right; padding-top: 14px;"><span class="glyphicon glyphicon-refresh glyphicon-spin"></span></div>
+                            </div>
+                             <div class="legend" id="legend">
+                             </div>
+                             
+                        </div>
+                        <div id="center">
+                    </div>
+                    
+                </div>
+            </div>
+            
+            <div class="row" id="resultbox">
+                <div id="results" class="ol-sm-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Search Result</h3>
+                        </div>
+                        <div class="panel-body" style="padding-top: 0px; min-height: 278px;">
+                           <div id="sample-resultlist">
+                               <h4>Samples</h4>
+                               <table id="sample_table" class="result_table table table-hover">
+                               <thead>
+                               <tr><th style="width:60px;"></th><th style="width:360px;">Description</th><th>Organism</th><th>Samples</th><th>Series</th><th>Download</th><th>Delete</th></tr>
+                               </thead>
+                               <tbody></tbody>
+                               </table>
+                           </div>
+                           <div id="gene-resultlist">
+                               <h4>Genes</h4>
+                               <table id="gene_table" class="result_table table table-hover">
+                               <thead>
+                               <tr><th style="width:60px;"></th><th style="width:360px;">Description</th><th>Organism</th><th>Genes</th><th>Enrichr</th><th>Download</th><th>Delete</th></tr>
+                               </thead>
+                               <tbody></tbody>
+                               </table>
+                           </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+</div>
+
+<div class="popup" data-popup="popup_genelist">
+    <div class="popup-inner" id="gene_symbol_list" style="resize: both;">
+    </div>
+</div>
+
+<div class="popup" data-popup="popup_genepage">
+    <div class="popup-inner" id="gene_genepage_info" style="width: 1060px; padding-bottom: 0px; padding-top: 0px; resize: both;">
+    </div>
+</div>
+
+
+<!--/content end--> 
+
+<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
+<style>
+.fl a {
+  text-decoration: none;
+  color: #000;
+
+  -webkit-transition: font-size 0.3s ease, background-color 0.3s ease;
+  -moz-transition: font-size 0.3s ease, background-color 0.3s ease;
+  -o-transition: font-size 0.3s ease, background-color 0.3s ease;
+  -ms-transition: font-size 0.3s ease, background-color 0.3s ease;
+  transition: font-size 0.3s ease, background-color 0.3s ease;
+  display: block;
+}
+
+.fl a:hover {
+  font-weight: bolder;
+  color: #45c19f;
+}
+</style>
+
+<div id="footer" style="background-color:#F8F8F8; height:140px; border-top: 1px solid #E7E7E7; padding-top: 5px; position: absolute; bottom: 0px; width: 100%;">
+    <div class="container">
+        <div class="row" style="padding-left: 120px;">
+            <div class="col-sm-3">
+            <div style="float: left; width:260px; padding-left:10px;">
+               <img src="images/mountsinai.png" style="padding-bottom:10px;" height=100><br>
+            </div>
+            </div>
+        
+            <div class="col-sm-6">
+                
+                 <ul style="padding-left: 30px; list-style: none; text-align: left;">
+                    <li class="fl"><a href="http://icahn.mssm.edu/research/labs/maayan-laboratory" target="_blank">The Ma'ayan Lab</a></li>
+                    <li class="fl"><a href="http://www.lincs-dcic.org/" target="_blank">BD2K-LINCS Data Coordination and Integration Center (DCIC)</a></li>
+                    <li class="fl"><a href="http://www.lincsproject.org/">NIH LINCS program</a></li>
+                    <li class="fl"><a href="http://bd2k.nih.gov/" target="_blank">NIH Big Data to Knowledge (BD2K)</a></li>
+                    <li class="fl"><a href="https://commonfund.nih.gov/idg/index" target="_blank">NIH Illuminating the Druggable Genome (IDG) Program</a></li>
+                    <li class="fl"><a href="http://icahn.mssm.edu/" target="_blank">Icahn School of Medicine at Mount Sinai</a></li>
+                </ul>
+            </div>
+            <div class="col-sm-3">
+                <img src="images/dcic.png" height=100><br>
+                © Ma'ayan Lab.
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+<script src="scripts/logic.js"></script>
+<script src="scripts/search.js"></script>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-6277639-31', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+</body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

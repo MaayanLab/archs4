@@ -1,0 +1,94 @@
+
+#legend{
+    top: 100px;
+    left: 100px;
+    position: absolute;
+    background-color: #dddddd;
+    padding: 10px;
+    overflow: hidden;
+    border: 2px solid black;
+}
+
+#gse{
+    min-height: 250px;
+    width: 1100px;
+}
+
+#gseid{
+    font-size: 200%;
+}
+
+#gsetitle{
+    font-size: 150%;
+}
+
+#gsesummary {
+    padding: 0px;
+    margin: auto;
+    margin-top: 20px;
+    background-color: #ffffff;
+}
+
+#maininfo {
+    padding: 0px;
+    width: 800px;
+    margin: auto;
+    margin-top: 20px;
+    float:left;
+}
+
+#detail {
+    padding-left:30px;
+    width: 200px;
+    margin: auto;
+    margin-top: 20px;
+    float:left;
+}
+
+#dates {
+    width: 200px;
+    padding-top: 20px;
+    padding-left:30px;
+    overflow: hidden; /* will contain if #first is longer than #second */
+}
+
+#authors {
+    padding-top: 20px;
+    font-size: 120%;
+}
+
+#samplecount {
+    padding-bottom: 20px;
+    font-size: 200%;
+}
+
+#samples{
+    margin-top: 20px;
+}
+
+#link{
+    font-size: 150%;
+}
+
+#gsmtitle{
+    font-size: 100%;
+}
+
+a:link {
+    color: red;
+}
+
+/* visited link */
+a:visited {
+    color: green;
+}
+
+/* mouse over link */
+a:hover {
+    color: hotpink;
+}
+
+/* selected link */
+a:active {
+    color: blue;
+}
