@@ -1,0 +1,41 @@
+{
+  "id": "/awsscheduler",
+  "cmd": null,
+  "cpus": 1,
+  "mem": 1024,
+  "disk": 2000,
+  "instances": 1,
+  "container": {
+    "type": "DOCKER",
+    "volumes": [],
+    "docker": {
+      "image": "maayanlab/awsjobscheduler",
+      "network": "BRIDGE",
+      "portMappings": [
+        {
+          "containerPort": 80,
+          "hostPort": 0,
+          "servicePort": 10079,
+          "protocol": "tcp",
+          "labels": {}
+        }
+      ],
+      "privileged": false,
+      "parameters": [],
+      "forcePullImage": true
+    }
+  },
+  "env": {
+    "sqlpass": "KanaSpuku7"
+  },
+  "labels": {
+    "public": "true"
+  },
+  "portDefinitions": [
+    {
+      "port": 10079,
+      "protocol": "tcp",
+      "labels": {}
+    }
+  ]
+}

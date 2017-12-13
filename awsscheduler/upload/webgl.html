@@ -1,0 +1,438 @@
+<html>
+
+<head>
+    <script src="scripts/three.min.js"></script>
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <script src="scripts/jquery-3.1.1.min.js"></script>
+    <script src="scripts/spectrum.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/spectrum.css">
+    
+    <style type="text/css">
+    body {
+        margin: 0px;
+        padding: 0px;
+    }
+    #container {
+        width:960px;
+        height:500px;
+    }
+    </style>
+
+</head>
+
+<body>
+
+<div id="maincontent"></div>
+<div id="left" style="background-color: black; width: 100px; height: 50px; float: left;"></div>
+<div id="center" style="background-color: white; float:left;"></div>
+<div id="right" style="background-color: grey; width: 300px; height: 800px; float: left; padding: 30px;">
+        
+    <form action="javascript:search_samples(this)">
+        <h2> Search for samples matching description</h2>
+      Search term:<br>
+      <input type="text" id="term" style="width:240px">
+      <input type="submit" value="Submit">
+    </form> 
+
+    <br>
+
+    <form action="javascript:search_similar_samples(this)">
+        <h2> Search for samples matching signature</h2>
+        Signature name:<br>
+        <input type="text" id="signame" style="width:290px"><br>Paste signature:
+        <textarea id="sig" form="signature" style="width: 290px; height: 320px;"></textarea><br>
+        <input type="submit" value="Submit">
+    </form>
+</div>
+
+<br><br>
+<div id="results"><h1>Results</h1></div>
+
+<!--div id="container"></div-->
+    <script>
+    
+    colorSets = [];
+    var pointGeo = new THREE.Geometry();
+    
+    var legend = document.createElement('div');
+    legend.style.top = 80 + 'px';
+    legend.style.left = 700 + 'px';
+    legend.style.position = 'absolute';
+    legend.style.display = 'inline';
+    legend.style.backgroundColor = "rgba(205, 205, 205, .5)";
+    legend.style.padding = 10;
+    legend.style.overflow = "hidden";
+    legend.style.borderRadius = "5px";
+    legend.style.border = "2px solid black";
+    legend.style.visible = "hidden";
+    legend.style.display = "none";
+    document.body.appendChild(legend);
+    
+    var colorNames = [];
+
+    var scatterPlot = new THREE.Object3D();
+    
+    function getLabel(color, text){
+        var entry = document.createElement('div');
+        entry.style.display = 'inline';
+        entry.style.width='200px';
+        var colorCode = document.createElement('div');
+        
+        //text2.style.zIndex = 1;    // if you still don't see the label, try uncommenting this
+        colorCode.style.width = 10;
+        colorCode.style.height = 10;
+        colorCode.style.backgroundColor = color;
+        colorCode.style.border = "2px solid white";
+        colorCode.style.float = "left";
+        colorCode.style.marginRight = 12;
+        colorCode.style.marginTop = 5;
+        
+        //text2.style.zIndex = 1;    // if you still don't see the label, try uncommenting this
+        var text2 = document.createElement('div');
+        text2.innerHTML = text;
+        text2.style.float = "left";
+        text2.style.onselectstart="return false";
+        entry.appendChild(colorCode);
+        entry.appendChild(text2);
+        
+        return entry;
+    }
+    
+    function makeUnselectable(node) {
+        if (node.nodeType == 1) {
+            node.setAttribute("unselectable", "on");
+        }
+        var child = node.firstChild;
+        while (child) {
+            makeUnselectable(child);
+            child = child.nextSibling;
+        }
+    }
+    
+    function hexToRgb(hex) { //TODO rewrite with vector output
+        var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        return result ? {
+            r: parseInt(result[1], 16),
+            g: parseInt(result[2], 16),
+            b: parseInt(result[3], 16)
+        } : null;
+    }
+    
+    function changeColor(samples, points, colo) { //TODO rewrite with vector output
+        for(i=0; i<samples.length; i++){
+            var id = sampleID.indexOf(samples[i]);
+            if(id > -1){
+                points.colors[id] = new THREE.Color(colo);
+            }
+        }
+
+        points.colorsNeedUpdate=true;
+    }
+    
+    // <!--
+    var renderer = new THREE.WebGLRenderer({
+        antialias: false,
+        preserveDrawingBuffer: true
+    });
+    
+    var w = 800;
+    var h = 800;
+    renderer.setSize(w, h);
+    
+    renderer.setClearColor(new THREE.Color(0xffffff));
+    document.getElementById("center").appendChild(renderer.domElement);
+
+    var camera = new THREE.PerspectiveCamera(45, w / h, 1, 10000);
+    camera.position.z = 137;
+    camera.position.x = -60;
+    camera.position.y = 100;
+
+    var scene = new THREE.Scene();
+
+    var scatterPlot = new THREE.Object3D();
+    scene.add(scatterPlot);
+
+    scatterPlot.rotation.y = 0;
+
+    function v(x, y, z) {
+        return new THREE.Vector3(x, y, z);
+    }
+    
+    
+
+    var dataset = [];
+    var sampleID = [];
+    d3.csv("test2.csv", function(d) {
+        
+        d.forEach(function (d,i) {
+            dataset[i] = [ +d["x"], +d["y"], +d["z"], +d["samples"] ];
+            sampleID[i] = parseInt(d["samples"]);
+        });
+        
+        var xExent = d3.extent(dataset, function (d) {return d[0]; }),
+        yExent = d3.extent(dataset, function (d) {return d[1]; }),
+        zExent = d3.extent(dataset, function (d) {return d[2]; }),
+        colExent = d3.extent(dataset, function (d) {return d[3]; });
+
+        var lineGeo = new THREE.Geometry();
+        var xScale = d3.scale.linear()
+                      .domain(xExent)
+                      .range([-50,50]);
+        var yScale = d3.scale.linear()
+                      .domain(yExent)
+                      .range([-50,50]);
+        var zScale = d3.scale.linear()
+                      .domain(zExent)
+                      .range([-50,50]);
+        
+        var mat = new THREE.PointsMaterial({
+            vertexColors: true,
+            size: 1,
+        });
+        
+        var mat2 = new THREE.PointsMaterial({
+            vertexColors: true,
+            size: 1.5
+        });
+        
+        var mats = [];
+
+        var pointCount = dataset.length;
+        
+        
+        for (var i = 0; i < pointCount; i ++) {
+            var x = xScale(dataset[i][0]);
+            var y = yScale(dataset[i][1]);
+            var z = zScale(dataset[i][2]);
+
+            pointGeo.vertices.push(new THREE.Vector3(x, y, z));
+            
+            if(dataset[i][3] != 0){
+                pointGeo.colors.push(new THREE.Color(0,0,0));
+                
+                var mat3 = new THREE.PointsMaterial({
+                    vertexColors: true,
+                    size: 1,
+                });
+                mats.push(mat3);
+            }
+            else{
+                pointGeo.colors.push(new THREE.Color(1,0,0));
+                var mat3 = new THREE.PointsMaterial({
+                    vertexColors: true,
+                    size: 1.5
+                });
+                mats.push(mat3);
+            }
+        }
+        
+        var points = new THREE.Points(pointGeo, mat);
+        scatterPlot.add(points);
+        
+        renderer.render(scene, camera);
+        var paused = false;
+        var last = new Date().getTime();
+        var down = false;
+        var sx = 0,
+            sy = 0;
+        
+        cent = document.getElementById('center');
+        
+        cent.onmousedown = function(ev) {
+            down = true;
+            sx = ev.clientX;
+            sy = ev.clientY;
+        };
+        cent.onmouseup = function() {
+            down = false;
+        };
+        cent.onmousemove = function(ev) {
+            if (down) {
+                var dx = ev.clientX - sx;
+                var dy = ev.clientY - sy;
+                scatterPlot.rotation.y += dx * 0.01;
+                camera.position.y += dy;
+                sx += dx;
+                sy += dy;
+            }
+        }
+        var animating = false;
+        cent.ondblclick = function() {
+            animating = !animating;
+        };
+
+        function animate(t) {
+            if (!paused) {
+                last = t;
+                if (animating) {
+                    var v = pointGeo.vertices;
+                    for (var i = 0; i < v.length; i++) {
+                        var u = v[i];
+                        u.angle += u.speed * 0.01;
+                        u.x = Math.cos(u.angle) * u.radius;
+                        u.z = Math.sin(u.angle) * u.radius;
+                    }
+                    pointGeo.__dirtyVertices = true;
+                }
+                renderer.clear();
+                camera.lookAt(scene.position);
+                renderer.render(scene, camera);
+            }
+            window.requestAnimationFrame(animate, renderer.domElement);
+        };
+        animate(new Date().getTime());
+        onmessage = function(ev) {
+            paused = (ev.data == 'pause');
+        };
+
+        //changeColor(pointGeo);
+
+    });
+
+
+    var saveLink = document.createElement('div');
+    var strDownloadMime = "image/octet-stream";
+    saveLink.style.top = '10px';
+    saveLink.style.width = '100%';
+    saveLink.style.background = '#FFFFFF';
+    saveLink.style.textAlign = 'center';
+    saveLink.innerHTML = '<a href="#" id="saveLink">Save Frame</a>';
+    document.body.appendChild(saveLink);
+    document.getElementById("saveLink").addEventListener('click', saveAsImage);
+
+
+    function saveAsImage() {
+        var imgData, imgNode;
+
+        try {
+            var strMime = "image/png";
+            imgData = renderer.domElement.toDataURL(strMime);
+            
+            saveFile(imgData.replace(strMime, strDownloadMime), "samplecloud.png");
+
+        } catch (e) {
+            console.log(e);
+            return;
+        }
+    }
+
+    var saveFile = function (strData, filename) {
+        var link = document.createElement('a');
+        if (typeof link.download === 'string') {
+            document.body.appendChild(link); //Firefox requires the link to be in the body
+            link.download = filename;
+            link.href = strData;
+            link.click();
+            document.body.removeChild(link); //remove the link when done
+        } else {
+            location.replace(uri);
+        }
+    }
+    
+    function search_samples(form){
+        add_search(document.getElementById('term').value);
+    }
+    
+    function search_similar_samples(form){
+        add_search(document.getElementById('signame').value);
+    }
+    
+    function addLegend(){
+        
+        var csets =document.getElementsByTagName("input");
+
+        while (legend.hasChildNodes()) {
+            legend.removeChild(legend.lastChild);
+        }
+
+        for (var j = 0; j < colorNames.length; j++){
+            legend.appendChild(getLabel($("#"+colorNames[j]).spectrum("get").toHexString(), colorNames[j]));
+            legend.appendChild(document.createElement('br'));
+        }
+        
+        legend.style.visible = "visible";
+        legend.style.display = "block";
+    }
+    
+    function searchSamples(searchterm){
+        $.getJSON("getSampleMatch.php?search="+searchterm, function(data){
+            var samples = data;
+            colorSets[samples[0]] = samples[1];
+            changeColor(samples[1], pointGeo, $("#"+searchterm.replace(/ /g, "")).spectrum("get").toHexString());
+            console.log(getLabel($("#"+searchterm.replace(/ /g, "")).spectrum("get").toHexString()));
+            console.log(samples);
+        });
+    }
+    
+    function add_search(text){
+        searchSamples(text);
+        var sampleset = document.createElement('div');
+        sampleset.id = "cset";
+        sampleset.style.backgroundColor = "lightgrey";
+        sampleset.style.width = 280;
+        sampleset.style.height = 34;
+        sampleset.style.padding = 5;
+        
+        var colo = document.createElement('div');
+        colo.style.float="left";
+
+        colo.innerHTML = "<input type='text' id='"+text.replace(/ /g, "")+"' />";
+        colorNames.push(text.replace(/ /g, "")); 
+        
+        var text2 = document.createElement('div');
+        text2.innerHTML = text;
+        text2.style.float = "left";
+        text2.style.onselectstart="return false";
+        text2.style.float = "left";
+        text2.style.padding = 5;
+        
+        sampleset.appendChild(colo);
+        sampleset.appendChild(text2);
+        
+        var img = document.createElement('img');
+        img.src = 'images/remove.png';
+        img.style.float = "right";
+        
+        img.addEventListener('click', function (e) {
+            var elem = e.target.parentNode;
+            elem.parentNode.removeChild(elem);
+
+            var index = colorNames.indexOf(elem.getElementsByTagName("input")[0].getAttribute("id"));
+            alert(index);
+            colorNames.splice(index, 1);
+            
+            addLegend();
+        });
+        
+        sampleset.appendChild(img)
+        
+        document.getElementById("right").appendChild(sampleset);
+        
+        $("#"+text.replace(/ /g, "")).on("change", function() {
+          addLegend();
+        }); 
+        
+        
+        $("#"+text.replace(/ /g, "")).spectrum({
+            color: '#'+Math.floor(Math.random()*16777215).toString(16)
+        });
+        
+    }
+    
+    setInterval(function() {
+        addLegend();
+    }, 1000);
+    
+    
+    //-->
+    </script>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</body>

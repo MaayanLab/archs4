@@ -1,0 +1,19 @@
+FROM r-base
+
+RUN R -e 'install.packages("Rook")'
+RUN R -e 'install.packages("Matrix")'
+RUN R -e 'install.packages("jsonlite")'
+RUN R -e 'install.packages("httpRequest")'
+RUN R -e 'install.packages("proxy")'
+RUN R -e 'install.packages("reshape")'
+
+RUN apt-get update && apt-get install -y haproxy
+
+WORKDIR /home
+COPY . /home
+
+RUN mv /home/haproxy.cfg /etc/haproxy/haproxy.cfg
+
+EXPOSE 23236
+
+CMD service haproxy start && Rscript index.R
