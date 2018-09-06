@@ -25,14 +25,14 @@ if(!file.exists(destination_file)){
     
     if(destination_file == "human_matrix_download.h5"){
         # human checksum (checksum is for latest version of ARCHS4 data)
-        correct_checksum = "d8810730ac56271bb2ff563e549c9988"
+        correct_checksum = "9b4625006b93726e31aea854150627e1"
     } else{
         # mouse checksum (checksum is for latest version of ARCHS4 data)
-        correct_checksum = "afbbaaed0a696b967ce8ecb0baa86ea5"
+        correct_checksum = "892973cfca99f29874afd2918190646e"
     }
     
     if(checksum != correct_checksum){
-        print("Existing file looks corrupted. Downloading compressed gene expression matrix again.")
+        print("Existing file looks corrupted or is out of date. Downloading compressed gene expression matrix again.")
         download.file(url, destination_file, quiet = FALSE)
     } else{
         print("Latest ARCHS4 file already exists.")
@@ -42,10 +42,10 @@ if(!file.exists(destination_file)){
 checksum = md5sum(destination_file)
 if(destination_file == "human_matrix_download.h5"){
     # human checksum (checksum is for latest version of ARCHS4 data)
-    correct_checksum = "d8810730ac56271bb2ff563e549c9988"
+    correct_checksum = "9b4625006b93726e31aea854150627e1"
 } else{
     # mouse checksum (checksum is for latest version of ARCHS4 data)
-    correct_checksum = "afbbaaed0a696b967ce8ecb0baa86ea5"
+    correct_checksum = "892973cfca99f29874afd2918190646e"
 }
 
 if(checksum != correct_checksum){

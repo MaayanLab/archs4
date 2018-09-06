@@ -11,7 +11,6 @@ require 'dbconfig.php';
 
 header('Content-type: application/json');
 
-
 $sql = "SELECT DISTINCT(library) FROM enrichment_terms";
 $result = $conn->query($sql);
 $library = [];
@@ -21,26 +20,23 @@ if ($result->num_rows > 0) {
     while($row = $result->fetch_assoc()) {
         $library[] = $row["library"];
         
-        $sql = "SELECT DISTINCT(geneset) FROM enrichment_terms WHERE library='".$row["library"]."'";
-        $resu = $conn->query($sql);
-        $ts = array();
+        $sql="SELECT DISTINCT(geneset) FROM enrichment_terms WHERE library=?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param('s', $row["library"]);
+        $stmt->execute();
+        $stmt->bind_result($data[0]);
+        $stmt->store_result();
         
-        if ($resu->num_rows > 0) {
-            while($ro = $resu->fetch_assoc()) {
-                $ts[] = $ro["geneset"];
+        $ts = array();
+        if ($stmt->num_rows > 0) {
+            while ($stmt->fetch()) {
+                $ts[] = $data[0];
             }
         }
-        
         $genesets[$row["library"]] = $ts;
-        
-        #$genesets = array_push($genesets, $ts);
-        #array_push($genesets, $ts);
     }
 }
-
 echo json_encode($genesets);
-
-
 ?>
 
 

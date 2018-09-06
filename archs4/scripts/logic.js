@@ -308,11 +308,100 @@ function replaceEnrichmentTerms(name){
     }
 }
 
+function getGenecount(url, organism){
+    // read text from URL location
+    var signame = url.split('/').pop();
+    var request = new XMLHttpRequest();
+    request.open('GET', url, true);
+    request.send(null);
+    request.onreadystatechange = function () {
+        if (request.readyState === 4 && request.status === 200) {
+            var type = request.getResponseHeader('Content-Type');
+            if (type.indexOf("text") !== 1) {
+                text = request.responseText;
+                var lines = text.split("\n");
+                var genes = [];
+                var counts = [];
+                
+                for(var l=0; l<lines.length; l++){
+                    var sp = lines[l].split("\t");
+                    genes.push(sp[0]);
+                    counts.push(sp[1]);
+                }
+                
+                genes.pop();
+                counts.pop();
+                
+                search_similar_signature(signame, organism, genes, counts)
+            }
+        }
+    }
+}
+
+function search_similar_signature(searchterm, organism, genes, counts){
+    
+    var jsonData = {};
+    
+    jsonData["type"] = "full_signature";
+    jsonData["species"] = organism;
+    jsonData["signatureName"] = searchterm;
+    jsonData["siggenes"] = genes;
+    jsonData["signature"] = counts;
+    
+    $("#calculating").show();
+    
+    $.ajax({
+        type: "POST",
+        url: "https://amp.pharm.mssm.edu/custom/rooky",
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        data: JSON.stringify(jsonData),
+        success: function(jdata) {
+            var samples = jdata['samples'];
+            var similarityScores = jdata['similarity'];
+            
+            console.log(jdata);
+            
+            filteredSamples = [];
+            var zscoreFilter = 3;
+            for(var i=0; i<samples.length; i++){
+                if(+(similarityScores[i]) > zscoreFilter){
+                    filteredSamples.push(samples[i]);
+                }
+            }
+            
+            var termid = hashCode(searchterm);
+            
+            colorSets[colorID][termid] = filteredSamples;
+            
+            var samp = filteredSamples.map(function (i){
+                return 'GSM' + i;
+            })
+            
+            getCode("buildExpressionMatrix.r", samp, searchterm, termid);
+            
+            addSampleResults(termid, searchterm, filteredSamples, []);
+            changeColor(termid, pointGeo, $("#"+termid).spectrum("get").toHexString());
+            
+            $("#calculating").hide();
+            
+        },
+        error: function (xhr, textStatus, errorThrown) {
+            console.log(xhr.responseText);
+        }
+    });
+}
+
 function toggleSearch(type){
     if(type == "meta"){
         $('#searchpane').load('tabs/searchmeta.html',function() {
-            $( "#menuu" ).menu();
-            $( "#menuu2" ).menu();
+            //$( "#menuu" ).menu();
+            //$( "#menuu2" ).menu();
+            var mcVM_options1={menuId:"menu-v1",alignWithMainMenu:false};
+            var mcVM_options2={menuId:"menu-v2",alignWithMainMenu:false};
+            start_v_menu(mcVM_options1);
+            start_v_menu(mcVM_options2);
+            
             $("#methodText").click(function(){
                 $("#methodToggle").animate({ opacity: 1.0 },200).slideToggle();
             });
@@ -328,6 +417,7 @@ function toggleSearch(type){
                 }
                 sessionStorage.setItem("sent", null);
             }
+            
         });
         $('#metatab').addClass("active");
         $('#enrichmenttab').removeClass("active");
@@ -409,6 +499,59 @@ function downloadScript(termid, cid) {
   document.body.appendChild(element);
   element.click();
   document.body.removeChild(element);
+}
+
+function downloadFile(termid, cid, species) {
+    $("#downicon-"+termid+"-"+cid).replaceWith("<img id=\"createicon-"+termid+"-"+cid+"\" src=\"images/createfile.gif\" width=\"24px\" data-toggle=\"tooltip\" title=\"A request has been sent to the server. The file download will start once the file has been created. Depending on the number of samples this can take some time. Currently maximally 2000 samples are returned. For larger quries download the bulk file.\">");
+    $('[data-toggle="tooltip"]').tooltip()
+    var searchterm = $("#"+termid).attr('namestr');
+    console.log(searchterm+"-"+cid+"-"+species);
+    
+    samples = colorSets[cid][termid];
+    console.log(samples);
+    
+    var samp = samples.map(function (i){
+        return 'GSM' + i;
+    });
+    
+    console.log(samp);
+    
+    var dat = {};
+    dat["species"] = species;
+    dat["searchterm"] = searchterm.replace(" ", "_");
+    dat["search_samples"] = samp;
+    
+    $.getJSON("https://jsonip.com/?callback=?", function (data) {
+        $.ajax({
+            url : "search/downloadtracker.php?ip="+data.ip+"&searchterm="+searchterm+"&samplenumber="+samp.length+"&species="+species,
+            dataType: "text",
+            success : function (data) {}
+        });
+    });
+    
+    // Use XMLHttpRequest instead of Jquery $ajax
+    xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+        var a;
+        if (xhttp.readyState === 4 && xhttp.status === 200) {
+            // Trick for making downloadable link
+            a = document.createElement('a');
+            a.href = window.URL.createObjectURL(xhttp.response);
+            // Give filename you wish to download
+            a.download = dat["species"]+"_"+dat["searchterm"]+"_expression.zip";
+            a.style.display = 'none';
+            document.body.appendChild(a);
+            a.click();
+            
+            $("#createicon-"+termid+"-"+cid).replaceWith("<i id=\"downicon-"+termid+"-"+cid+"\" class=\"glyphicon glyphicon-download-alt\" style=\"cursor:pointer\" onclick=\"downloadFile('"+termid+"','"+cid+"','"+species+"');\"></i>");
+        }
+    };
+    // Post data to URL which handles post request
+    xhttp.open("POST", "https://amp.pharm.mssm.edu/hydra/data");
+    xhttp.setRequestHeader("Content-Type", "application/json");
+    // You should set responseType as blob for binary responses
+    xhttp.responseType = 'blob';
+    xhttp.send(JSON.stringify(dat));
 }
 
 function downloadGenes(termid, cid) {
@@ -499,9 +642,9 @@ function chooseSpecies(speciesname, modename){
         dataset = [];
         sampleID = [];
 
-        file = modename+"_"+speciesname+"_tsne.csv";
+        file = "data/"+modename+"_"+speciesname+"_tsne.csv";
         activeSpecies = speciesname;
-
+        
         d3.csv(file, function(d) {
             
             d.forEach(function (d,i) {
@@ -665,6 +808,20 @@ function chooseSpecies(speciesname, modename){
                 changeColor(termids[k], pointGeo, $("#"+termids[k]).spectrum("get").toHexString());
             }
             addLegend();
+            
+            
+            var b = sessionStorage.getItem("similarity");
+            
+            if(b){
+                if(b != "null"){
+                    colorID = 0;
+                    if(sessionStorage.getItem("organism") == "mouse"){
+                        chooseSpecies("mouse", "sample");
+                    }
+                    getGenecount(b, sessionStorage.getItem("organism"));
+                    sessionStorage.setItem("similarity", null);
+                }
+            }
             
             $("#calculating").hide();
         });
@@ -859,66 +1016,80 @@ function selectHand(samples){
     var  searchterm = "Manual Selection "+manualSelectCounter;
     var termid = hashCode(searchterm);
     
-    colorSets[colorID][termid] = samples;
-    
-    if(activeMode == "sample"){
-        var samp = samples.map(function (i){
-            return 'GSM' + i;
-        })
-        getCode("buildExpressionMatrix.r", samp, searchterm, termid);
+    if(samples.length > 0){
+        
+        colorSets[colorID][termid] = samples;
+        
+        if(activeMode == "sample"){
+            var samp = samples.map(function (i){
+                return 'GSM' + i;
+            })
+            getCode("buildExpressionMatrix.r", samp, searchterm, termid);
+            
+            var str = "<tr id=\"tr-"+termid+"\"><td style=\"padding: 0px;\"><div id=\""+termid+"-result\" style=\"padding:0px;\"><input type=\"text\" id=\""+termid+"\"></div></td><td>"+searchterm+"</td><td>"+(activeSpecies.charAt(0).toUpperCase() + activeSpecies.slice(1))+"</td><td>"+samples.length+"</td><td>NA</td><td style=\"font-size: 1.4em;\"><a style=\"cursor:pointer\" width=\"14px\" onclick=\"downloadScript('"+termid+"','"+colorID+"');\">R</a> <i id=\"downicon-"+termid+"-"+colorID+"\" class=\"glyphicon glyphicon-download-alt\" style=\"cursor:pointer\" onclick=\"downloadFile('"+termid+"','"+colorID+"','"+activeSpecies+"');\"></i></td><td style=\"font-size: 1.4em;\"><div id=\"TrashButton\" class=\"glyphicon glyphicon-remove\" style=\"cursor:pointer\" onclick=\"removeRow('"+termid+"');\"></div></td></tr>";
+            
+            
+            $('#sample_table tr:last').after(str);
+        }
+        else{
+            var str = "<tr id=\"tr-"+termid+"\"><td style=\"padding: 0px;\"><div id=\""+termid+"-result\" style=\"padding:0px;\"><input type=\"text\" id=\""+termid+"\"></div></td><td>"+searchterm+"</td><td>"+(activeSpecies.charAt(0).toUpperCase() + activeSpecies.slice(1))+"</td><td><a style=\"padding:0px;\" onclick=\"openPopup('"+termid+"', '"+colorID+"')\" href=\"#\">"+samples.length+"</a></td><td><a onclick=\"forwardGenesEnrichr('"+termid+"','"+searchterm+"','"+colorID+"')\"><img src=\"images/enrichr.png\"></a></td><td style=\"font-size: 1.4em;\"><i class=\"glyphicon glyphicon-download-alt\" style=\"cursor:pointer\" onclick=\"downloadGenes('"+termid+"', '"+colorID+"');\"></i></td><td style=\"font-size: 1.4em;\"><div id=\"TrashButton\" class=\"glyphicon glyphicon-remove\" style=\"cursor:pointer\" onclick=\"removeRow('"+termid+"');\"></div></td></tr>";
+            copyStrings[colorID][termid] = samples.join("\n");
+            
+            $('#gene_table tr:last').after(str);
+        }
+        
+        colorNames[colorID].push(termid); 
+        
+        $("#"+termid).attr("namestr", searchterm);
 
-        var str = "<tr id=\"tr-"+termid+"\"><td style=\"padding: 0px;\"><div id=\""+termid+"-result\" style=\"padding:0px;\"><input type=\"text\" id=\""+termid+"\"></div></td><td>"+searchterm+"</td><td>"+(activeSpecies.charAt(0).toUpperCase() + activeSpecies.slice(1))+"</td><td>"+samples.length+"</td><td>NA</td><td style=\"font-size: 1.4em;\"><i class=\"glyphicon glyphicon-download-alt\" style=\"cursor:pointer\" onclick=\"downloadScript('"+termid+"','"+colorID+"');\"></i></td><td style=\"font-size: 1.4em;\"><div id=\"TrashButton\" class=\"glyphicon glyphicon-remove\" style=\"cursor:pointer\" onclick=\"removeRow('"+termid+"');\"></div></td></tr>";
-    
-        $('#sample_table tr:last').after(str);
+        $("#"+termid).on("change", function() {
+            changeColor(termid, pointGeo, $("#"+termid).spectrum("get").toHexString());
+            addLegend();
+        }); 
+        
+        $("#"+termid).spectrum({
+            color: startColor[colorCounter % startColor.length]
+        });
+        
+        colorCounter = colorCounter + 1;
+        addLegend();
+        changeColor(termid, pointGeo, $("#"+termid).spectrum("get").toHexString());
+        
+        $('html, body').animate({
+            scrollTop: $("#resultbox").offset().top
+        }, 1000);
     }
     else{
-        var str = "<tr id=\"tr-"+termid+"\"><td style=\"padding: 0px;\"><div id=\""+termid+"-result\" style=\"padding:0px;\"><input type=\"text\" id=\""+termid+"\"></div></td><td>"+searchterm+"</td><td>"+(activeSpecies.charAt(0).toUpperCase() + activeSpecies.slice(1))+"</td><td><a style=\"padding:0px;\" onclick=\"openPopup('"+termid+"', '"+colorID+"')\" href=\"#\">"+samples.length+"</a></td><td><a onclick=\"forwardGenesEnrichr('"+termid+"','"+searchterm+"','"+colorID+"')\"><img src=\"images/enrichr.png\"></a></td><td style=\"font-size: 1.4em;\"><i class=\"glyphicon glyphicon-download-alt\" style=\"cursor:pointer\" onclick=\"downloadGenes('"+termid+"', '"+colorID+"');\"></i></td><td style=\"font-size: 1.4em;\"><div id=\"TrashButton\" class=\"glyphicon glyphicon-remove\" style=\"cursor:pointer\" onclick=\"removeRow('"+termid+"');\"></div></td></tr>";
-        copyStrings[colorID][termid] = samples.join("\n");
-        
-        $('#gene_table tr:last').after(str);
+        alert("Search term did not return any results.");
     }
-    
-    colorNames[colorID].push(termid); 
-    
-    $("#"+termid).attr("namestr", searchterm);
-
-    $("#"+termid).on("change", function() {
-        changeColor(termid, pointGeo, $("#"+termid).spectrum("get").toHexString());
-        addLegend();
-    }); 
-    
-    $("#"+termid).spectrum({
-        color: startColor[colorCounter % startColor.length]
-    });
-    
-    colorCounter = colorCounter + 1;
-    addLegend();
-    changeColor(termid, pointGeo, $("#"+termid).spectrum("get").toHexString());
-    
-    $('html, body').animate({
-        scrollTop: $("#resultbox").offset().top
-    }, 1000);
 }
 
 function searchSamples(searchterm, termid){
     
     $.getJSON("search/getSampleMatch.php?search="+searchterm+"&species="+activeSpecies, function(data){
         var samples = data[1];
-        colorSets[colorID][termid] = samples;
-
-        var samp = samples.map(function (i){
-            return 'GSM' + i;
-        })
         
-        getCode("buildExpressionMatrix.r", samp, searchterm, termid);
-        
-        var series = data[2];
-        var useries = Array.from(new Set(series))
-        
-        $("#calculating").hide();
-        
-        addSampleResults(termid, searchterm, samples, useries);
-        changeColor(termid, pointGeo, $("#"+termid).spectrum("get").toHexString());
+        if(samples.length > 0){
+            
+            colorSets[colorID][termid] = samples;
+            
+            var samp = samples.map(function (i){
+                return 'GSM' + i;
+            })
+            
+            getCode("buildExpressionMatrix.r", samp, searchterm, termid);
+            
+            var series = data[2];
+            var useries = Array.from(new Set(series))
+            
+            $("#calculating").hide();
+            
+            addSampleResults(termid, searchterm, samples, useries);
+            changeColor(termid, pointGeo, $("#"+termid).spectrum("get").toHexString());
+        }
+        else{
+            alert("Search term did not return any results.");
+        }
     });
 }
 
@@ -975,9 +1146,15 @@ function addSampleResults(termid, searchterm, samples, useries){
         seriescount = useries.length;
     }
     
-    var str = "<tr id=\"tr-"+termid+"\"><td style=\"padding: 0px;\"><div id=\""+termid+"-result\" style=\"padding:0px;\"><input type=\"text\" id=\""+termid+"\"></div></td><td>"+searchterm+"</td><td>"+(activeSpecies.charAt(0).toUpperCase() + activeSpecies.slice(1))+"</td><td>"+samples.length+"</td><td>"+seriescount+"</td><td style=\"font-size: 1.4em;\"><i class=\"glyphicon glyphicon-download-alt\" style=\"cursor:pointer\" onclick=\"downloadScript('"+termid+"', '"+colorID+"');\"></i></td><td style=\"font-size: 1.4em;\"><div id=\"TrashButton\" class=\"glyphicon glyphicon-remove\" style=\"cursor:pointer\" onclick=\"removeRow('"+termid+"');\"></div></td></tr>";
+    var str = "<tr id=\"tr-"+termid+"\"><td style=\"padding: 0px;\"><div id=\""+termid+"-result\" style=\"padding:0px;\"><input type=\"text\" id=\""+termid+"\"></div></td><td>"+searchterm+"</td><td>"+(activeSpecies.charAt(0).toUpperCase() + activeSpecies.slice(1))+"</td><td>"+samples.length+"</td><td>"+seriescount+"</td><td style=\"font-size: 1.4em;\"><a style=\"cursor:pointer\" width=\"14px\" onclick=\"downloadScript('"+termid+"','"+colorID+"');\">R</a> <i id=\"downicon-"+termid+"-"+colorID+"\" class=\"glyphicon glyphicon-download-alt\" style=\"cursor:pointer\" onclick=\"downloadFile('"+termid+"', '"+colorID+"','"+activeSpecies+"');\"></i></td><td style=\"font-size: 1.4em;\"><div id=\"TrashButton\" class=\"glyphicon glyphicon-remove\" style=\"cursor:pointer\" onclick=\"removeRow('"+termid+"');\"></div></td></tr>";
+    
+    var re = new RegExp("^GSE[0-9]{5,12}$");
+    if(re.test(searchterm)){
+        str = "<tr id=\"tr-"+termid+"\"><td style=\"padding: 0px;\"><div id=\""+termid+"-result\" style=\"padding:0px;\"><input type=\"text\" id=\""+termid+"\"></div></td><td>"+searchterm+" <a target=\"_blank\" style=\"margin-left: 30px;\" href=\"series/"+searchterm+"\"><img src=\"images/biojupies.png\" width=12> BioJupies</a></td><td>"+(activeSpecies.charAt(0).toUpperCase() + activeSpecies.slice(1))+"</td><td>"+samples.length+"</td><td>NA</td><td style=\"font-size: 1.4em;\"><a style=\"cursor:pointer\" width=\"14px\" onclick=\"downloadScript('"+termid+"','"+colorID+"');\">R</a> <i id=\"downicon-"+termid+"-"+colorID+"\" class=\"glyphicon glyphicon-download-alt\" style=\"cursor:pointer\" onclick=\"downloadFile('"+termid+"','"+colorID+"','"+activeSpecies+"');\"></i></td><td style=\"font-size: 1.4em;\"><div id=\"TrashButton\" class=\"glyphicon glyphicon-remove\" style=\"cursor:pointer\" onclick=\"removeRow('"+termid+"');\"></div></td></tr>";
+    }
+    
     $('#sample_table tr:last').after(str);
-
+    
     colorNames[colorID].push(termid); 
     
     $("#"+termid).attr("namestr", searchterm);
@@ -1002,7 +1179,7 @@ function addSampleResults(termid, searchterm, samples, useries){
 function getCode(file, samples, searchterm, termid){
     
     $.ajax({
-        url : file,
+        url : file+"?ra="+Math.floor(Math.random() * 1000000000),
         dataType: "text",
         success : function (data) {
             var allText = data;
@@ -1024,7 +1201,9 @@ function getCode(file, samples, searchterm, termid){
             
             allText = allText.replace("insert_samples", newString);
             allText = allText.replace("searchterm", searchterm);
-            allText = allText.replace(/selected_species/g, activeSpecies);
+            allText = allText.replace("selected_species", activeSpecies);
+            allText = allText.replace("selected_species", activeSpecies);
+            allText = allText.replace("selected_species", activeSpecies);
             copyStrings[colorID][termid] = allText;
         }
     });
@@ -1088,7 +1267,7 @@ function search_similar(searchterm, direction, termid){
     
     $.ajax({
         type: "POST",
-        url: "http://amp.pharm.mssm.edu/custom/rooky",
+        url: "https://amp.pharm.mssm.edu/custom/rooky",
         contentType: "application/json; charset=utf-8",
         dataType: "json",
         data: JSON.stringify(jsonData),
@@ -1121,7 +1300,7 @@ function openPopup(termid, cid){
     var linkstr = "";
     for(var i=0; i<genelist.length; i++){
         //linkstr += "<a onclick=\"openGenepage2('"+genelist[i]+"')\" href=\"#\">"+genelist[i]+"</a> | ";
-        linkstr += "<a href=\"search/genepage.php?search=go&gene="+genelist[i]+"\" target=\"_blank\">"+genelist[i]+"</a> | ";
+        linkstr += "<a href=\"gene/"+genelist[i]+"\" target=\"_blank\">"+genelist[i]+"</a> | ";
     }
     linkstr = linkstr.substring(0, linkstr.length - 3);
     
@@ -1145,7 +1324,7 @@ function submitGeneSearch(){
     var geneid = $("#genesymbolsearch").val().toUpperCase();
     //openGenepage2(geneid);
     if(geneid.length > 1){
-        window.open("search/genepage.php?search=go&gene="+geneid,'_blank');
+        window.open("gene/"+geneid,'_blank');
     }
 }
 
@@ -1154,7 +1333,7 @@ function submitGeneSearch2(){
     
     if(geneid.length > 1){
         //openGenepage2(geneid);
-        window.open("search/genepage.php?search=go&gene="+geneid,'_blank');
+        window.open("gene/"+geneid,'_blank');
     }
 }
 

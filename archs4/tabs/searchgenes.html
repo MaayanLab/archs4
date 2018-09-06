@@ -1,0 +1,44 @@
+<h4>Search genes <span id="methodText" class="glyphicon glyphicon-question-sign" style="cursor: hand; font-size:16px;"></span></h4>
+
+<div data-role="collapsible">
+  <p id="methodToggle">Search genes based on gene symbol. A new gene page will open containing average gene expression in tissues and cell lines as well as predicted gene function.
+</p>
+</div>
+
+<form id="genesearchForm" class="form-inline my-2 my-lg-0" style="padding-top: 0px; float: left;" action="javascript:submitGeneSearch2()">
+  <label for="genesymbolsearch2" class="control-label">Search gene by symbol</label><br>
+  <input class="form-control mr-sm-2" id="genesymbolsearch2" type="text" placeholder="Search Gene" style="width: 200px;">
+  <button class="btn btn-outline-success my-2 my-sm-0" type="button" onclick="submitGeneSearch2();">Search</button>
+</form>
+
+<br>
+<br>
+<hr>
+
+<h4>Search genes by gene set</h4>
+
+<div data-role="collapsible">
+  <p id="methodToggle">Search genes based on gene annotation.
+</p>
+</div>
+
+<div class="input-group">
+    <span class="twitter-typeahead" style="position: relative; display: inline-block;">
+        <label for="enrichLib" class="control-label">Gene Set Library</label><br>
+        <select id="enrichLib" class="selectpicker">
+        </select>
+        
+        <br><br>
+        
+        <label for="enrichTerm" class="control-label">Search gene set</label><br>
+        <select id="enrichTerm" class="selectpicker" data-show-subtext="true" data-live-search="true">
+        </select>
+
+    </span>
+</div>
+
+
+<br>
+<div>
+    <button onclick="searchGenes()" class="btn btn-info btn-sm enrichSearchBtn">Search genes</button>
+</div>

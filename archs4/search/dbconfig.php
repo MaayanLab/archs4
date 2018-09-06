@@ -2,11 +2,12 @@
 	
 	ini_set("mysql.trace_mode", "0");
 	
-	$servername = "zzz.amazonaws.com";
-	$username = "yyy";
-	$password = "xxx";
-	$dbname = "alignment_pipeline";
-
+	$servername = getenv("dbserver");
+    $username = getenv("dbuser");
+    $password = getenv("dbpass");
+    $dbname = getenv("dbname");
+    
+    
 	// Create connection
 	$conn = new mysqli($servername, $username, $password, $dbname);
 	// Check connection

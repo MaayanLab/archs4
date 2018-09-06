@@ -1,0 +1,571 @@
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Alexander Lachmann">
+    <title>ARCHS4 ZOO</title>
+    
+    <link rel="icon" href="images/archs-icon.png?v=2" type="image/png">
+
+    <script src="scripts/three.min.js"></script>
+    <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <script src="scripts/jquery-3.1.1.min.js"></script>
+    <script src="scripts/d3.layout.cloud.js"></script>
+    <script src="scripts/tags.js"></script>
+    
+    <script type="text/javascript" src="scripts/word-cloud.js"></script>
+    <!-- <script type="text/javascript" src="http://www.json.org/json2.js"></script> -->
+    <link rel="stylesheet" type="text/css" href="css/spectrum.css">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    
+    <link rel="stylesheet" type="text/css" href="css/jquery-ui.css">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <link rel="stylesheet" href="css/css.css">
+    <link rel="stylesheet" type="text/css" href="css/footer.css">
+    <link rel="stylesheet" type="text/css" href="css/desert.css">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    
+    <script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
+    
+    <script src="scripts/jquery.auto-complete.min.js"></script>
+    <link rel="stylesheet" href="css/jquery.auto-complete.css">
+    
+    <style type="text/css">
+    body {
+        font-size: 100%;
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    }
+    #refresh-btn {
+        float: right;
+        font-size: 12px;
+        border-radius: 0;
+    }
+    
+    html {
+      height: 100%;
+      box-sizing: border-box;
+    }
+
+    *,
+    *:before,
+    *:after {
+      box-sizing: inherit;
+    }
+
+    body {
+      position: relative;
+      margin: 0;
+      padding-bottom: 6rem;
+      min-height: 100%;
+    }
+    
+    table {
+      border-spacing: 12px;
+      font-size: 14px;
+    }
+    td {
+      padding: 10px;
+      background: white;
+    }
+
+</style>
+    
+    <style type="text/css">
+    body {
+        margin: 0px;
+        padding: 0px;
+        font-family: 'Open Sans', sans-serif;
+        background-color: #f2fbfa;
+        background-image: url("images/congruent_pentagon2.png");
+        background-repeat: repeat;
+    }
+    
+    </style>
+    
+    <script type="text/javascript">
+        
+        if (location.protocol != 'https:'){
+         location.href = 'https:' + window.location.href.substring(window.location.protocol.length);
+        }
+        
+        function addemail(){
+            var email = $("#emailfield").val();
+            if(email.length > 1){
+                $.ajax({
+                    url : "search/emaillist.php?email="+email,
+                    dataType: "text",
+                    success : function (data) {
+                        $("#newsletterform").html("<br><b>Thank you for joining the ARCHS4 newsletter.</b>");
+                    }
+                });
+            }
+        }
+        
+        function submitGeneSearch(){
+            var geneid = $("#genesymbolsearch").val().toUpperCase();
+            if(geneid.length > 1){
+                window.open("search/genepage.php?search=go&gene="+geneid,'_blank');
+            }
+        }
+        
+        function scrollPage(location){
+            $('html, body').animate({
+                scrollTop: $("#"+location).offset().top - 20
+            }, 500);
+        }
+        
+        function downloadFile(url, file, version){
+            $.getJSON("https://jsonip.com/?callback=?", function (data) {
+                $.ajax({
+                    url : "search/downloadtracker.php?ip="+data.ip+"&file="+file+"&version="+version,
+                    dataType: "text",
+                    success : function (data) {
+                        window.location = url;
+                    }
+                });
+            });
+        }
+    </script>
+</head>
+<body>
+
+
+<div id="nav" style="margin-bottom: 5px; background-color: #F8F8F8; border-bottom: 1px solid #E7E7E7; height: 60px;">
+    <nav class="navbar navbar-default navbar-toggleable-md navbar-inverse container" role="navigation" style="width:1050px">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse"
+                        data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" title="ARCHS4: Massive mining of publicly available RNA-seq data from human and mouse" href="index.html">
+                    <span>
+                        <img src="images/archs-42.png" width=160 style="padding-top: 3px;">
+                    </span>
+                    </a>
+            </div>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1" style="color:white;">
+                <ul class="nav navbar-nav">
+                    <li id="browse" class="dropdown disabled">
+                        <a class="dropdown-toggle" data-toggle="dropdown" style="color: lightgrey;">Search<span class="caret"></span></a>
+                        
+                    </li>
+                    
+                    <li id="visualize"><a href="data.html">Visualize</a></li>
+                    
+                    <li id="download"><a href="download.html">Download</a></li>
+
+                    <li id="chrome"><a href="https://chrome.google.com/webstore/detail/archs4/ognafeffndmmiliegaamoockceneedea" target="_blank">Chrome Extension</a></li>
+                    <li id="help"><a href="help.html">Help</a></li>
+                    
+                    <li id="twitter"><a href="#" onclick="window.open('https://twitter.com/intent/tweet?original_referer=https%3A%2F%2Fwww.biorxiv.org%2Fcontent%2Fearly%2F2017%2F09%2F15%2F189092&ref_src=twsrc%5Etfw&text=Massive%20Mining%20of%20Publicly%20Available%20RNA-seq%20Data%20from%20Human%20and%20Mouse&tw_p=tweetbutton&url=https%3A%2F%2Fwww.biorxiv.org%2Fcontent%2Fearly%2F2017%2F09%2F15%2F189092', 'newwindow', 'width=600, height=250'); return false;"><img id="animation-target" src="images/twitter.png" width="25" style="margin-top:-1px;"></a></li>
+                    
+                    <!--<li id="contribute"><a href="#contribute">Contribute</a></li>-->
+                </ul>
+                <form class="form-inline my-2 my-lg-0" style="padding-top: 6px; float: right; margin-right:-5px;" action="javascript:submitGeneSearch()">
+                  <input class="form-control mr-sm-2" id="genesymbolsearch" type="text" placeholder="Search Gene">
+                  <button class="btn btn-info my-2 my-sm-0" type="button" onclick="submitGeneSearch();">Search</button>
+                </form>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container-fluid -->
+    </nav>
+</div>
+
+
+
+<div style="background-color: white; width: 960px; margin:0 auto; border: 1px solid #E3E3E3; padding-left: 20px; padding-right:20px; ">
+<div style="padding-top: 40px; text-align: center; width: 900;"><img id="animation-target" src="images/archs4zoo.png"></div>
+<hr>
+This section contains all files created for the ARCHS<sup>4</sup> ZOO collection. Currently, we support a selected set of species other than mouse and human. The methods are described in <a href="https://www.nature.com/articles/s41467-018-03751-6" target="_blank"> <span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span> <img src="images/naturecomm.png" height=20></a>. For help in accessing the files, please refer to the Help section or contact us directly. The database will be updated on a regular basis while old versions of the files will be accessible.
+<div id="newsletterform">
+    <br><div style="width: 480px; float: left; margin-right: 10px;">
+    If you would like to receive updates about ARCHS<sup>4</sup>  data and stay informed about new data releases consider signing up for our newsletter.
+    </div>
+    <form class="form-inline my-2 my-lg-0" style="padding-top: 2px;" action="javascript:addemail()">
+      <input class="form-control mr-sm-2" id="emailfield" type="email" placeholder="Email address" style="width: 260px;">
+      <button class="btn btn-info my-2 my-sm-0" type="button" onclick="addemail();">Keep Me Updated</button>
+    </form>
+</div>
+<hr>
+<div>
+    
+    <div style="padding-top: 0px; text-align: center; width: 900;">
+        <a href="javascript:scrollPage('Drosophila_melanogaster')">Drosophila melanogaster</a>
+        | <a href="javascript:scrollPage('Bos_taurus')">Bos taurus</a>
+        | <a href="javascript:scrollPage('Caenorhabditis_elegans')">Caenorhabditis elegans</a>
+        | <a href="javascript:scrollPage('Danio_rerio')">Danio rerio</a>
+        | <a href="javascript:scrollPage('Gallus_gallus')">Gallus gallus</a>
+        | <a href="javascript:scrollPage('Rattus_norvegicus')">Rattus norvegicus</a>
+        | <a href="javascript:scrollPage('Saccharomyces_cerevisiae')">Saccharomyces cerevisiae</a>
+        | <a href="javascript:scrollPage('Arabidopsis_thaliana')">Arabidopsis thaliana</a>
+        
+    </div>
+    
+    
+<hr>
+
+<div style="width:940px; padding-bottom: 20px;" id="Drosophila_melanogaster"><h3>Drosophila melanogaster</h3>
+    <div style="float: right; top: -30px; position: relative; padding-right: 40px;">Last updated: 8/2018 | Samples: 9924 | Series: 368</div>
+    <br>
+<div style="font-size: 16px; padding-left:20px;">
+    
+    <table>
+        <tr>
+            <td style="width: 220px;"><a href="javascript:downloadFile('https://s3.amazonaws.com/mssm-archs4-zoo/Drosophila_melanogaster_genecount_v1.h5','Drosophila_melanogaster_genecount.h5','1')">Gene counts</a></td>
+            <td style="width: 250px;">Size: 206MB</td>
+            <td style="width: 140px;"><a href="javascript:downloadFile('https://s3.amazonaws.com/mssm-seq-index/Drosophila_melanogaster_index.idx','Drosophila_melanogaster_index.idx','1')">Kallisto index</a></td>
+            <td>Size: 674MB</td>
+        </tr>
+        <tr>
+            <td style="width: 220px;"><a href="javascript:downloadFile('https://s3.amazonaws.com/mssm-archs4-zoo/Drosophila_melanogaster_transcript_v1.h5','Drosophila_melanogaster_transcript.h5','1')">Transcript counts</a></td>
+            <td>Size: 375MB</td>
+            <td style="width: 140px;"><a href="javascript:downloadFile('https://s3.amazonaws.com/mssm-seq-genemapping/Drosophila_melanogaster_mapping.rda','Drosophila_melanogaster_mapping.rda','1')">Gene mapping</a></td>
+            <td>Size: < 1MB</td>
+        </tr>
+        <tr>
+            <td style="width: 220px;"><a href="javascript:downloadFile('https://s3.amazonaws.com/mssm-archs4-zoo/Drosophila_melanogaster_tpm_v1.h5','Drosophila_melanogaster_tpm.h5','1')">Transcript TPM</a></td>
+            <td>Size: 1.2GB</td>
+            <td style="width: 140px;"><a href="javascript:downloadFile('https://s3.amazonaws.com/mssm-archs4-zoo/Drosophila_melanogaster_alignment_quality.rda','Drosophila_melanogaster_alignment_quality.rda','1')">Alignment quality</a></td>
+            <td>Size: < 1MB</td>
+        </tr>
+        <!--
+        <tr>
+            <td style="width: 220px;"><a href="javascript:downloadFile('https://s3.amazonaws.com/mssm-archs4-zoo/Drosophila_melanogaster_genecount_v1.h5','_genecount.h5','1')">Sample meta information RDA</a></td><td>Size: 24.5MB</td>
+        </tr>
+        -->
+    </table>
+</div>
+</div>
+<hr>
+
+<div style="width:940px; height: 200px" id="Bos_taurus"><h3>Bos taurus</h3>
+<div style="float: right; top: -30px; position: relative; padding-right: 40px;">Last updated: 8/2018 | Samples: 2039 | Series: 69</div>
+    <br>
+<div style="font-size: 16px; padding-left:20px;">
+    
+    <table>
+        <tr>
+            <td style="width: 220px;"><a href="javascript:downloadFile('https://s3.amazonaws.com/mssm-archs4-zoo/Bos_taurus_genecount_v1.h5','Bos_taurus_genecount.h5','1')">Gene counts</a></td>
+            <td style="width: 250px;">Size: 60MB</td>
+            <td style="width: 140px;"><a href="javascript:downloadFile('https://s3.amazonaws.com/mssm-seq-index/Bos_taurus_index.idx','Bos_taurus_index.idx','1')">Kallisto index</a></td>
+            <td>Size: 819MB</td>
+        </tr>
+        <tr>
+            <td style="width: 220px;"><a href="javascript:downloadFile('https://s3.amazonaws.com/mssm-archs4-zoo/Bos_taurus_transcript_v1.h5','Bos_taurus_transcript.h5','1')">Transcript counts</a></td>
+            <td>Size: 64MB</td>
+            <td style="width: 140px;"><a href="javascript:downloadFile('https://s3.amazonaws.com/mssm-seq-genemapping/Bos_taurus_mapping.rda','Bos_taurus_mapping.rda','1')">Gene mapping</a></td>
+            <td>Size: < 1MB</td>
+        </tr>
+        <tr>
+            <td style="width: 220px;"><a href="javascript:downloadFile('https://s3.amazonaws.com/mssm-archs4-zoo/Bos_taurus_tpm_v1.h5','Bos_taurus_tpm.h5','1')">Transcript TPM</a></td>
+            <td>Size: 192MB</td>
+            <td style="width: 140px;"><a href="javascript:downloadFile('https://s3.amazonaws.com/mssm-archs4-zoo/Bos_taurus_alignment_quality.rda','Bos_taurus_alignment_quality.rda','1')">Alignment quality</a></td>
+            <td>Size: < 1MB</td>
+        </tr>
+        <!--
+        <tr>
+            <td style="width: 220px;"><a href="javascript:downloadFile('https://s3.amazonaws.com/mssm-archs4-zoo/Drosophila_melanogaster_genecount_v1.h5','_genecount.h5','1')">Sample meta information RDA</a></td><td>Size: 24.5MB</td>
+        </tr>
+        -->
+    </table>
+</div>
+</div>
+<hr>
+
+<div style="width:940px; height: 200px" id="Caenorhabditis_elegans"><h3>Caenorhabditis elegans</h3>
+<div style="float: right; top: -30px; position: relative; padding-right: 40px;">Last updated: 8/2018 | Samples: 2935 | Series: 182</div>
+    <br>
+<div style="font-size: 16px; padding-left:20px;">
+    
+    <table>
+        <tr>
+            <td style="width: 220px;"><a href="javascript:downloadFile('https://s3.amazonaws.com/mssm-archs4-zoo/Caenorhabditis_elegans_genecount_v1.h5','Caenorhabditis_elegans_genecount.h5','1')">Gene counts</a></td>
+            <td style="width: 250px;">Size: 84MB</td>
+            <td style="width: 140px;"><a href="javascript:downloadFile('https://s3.amazonaws.com/mssm-seq-index/Caenorhabditis_elegans_index.idx','Caenorhabditis_elegans_index.idx','1')">Kallisto index</a></td>
+            <td>Size: 596MB</td>
+        </tr>
+        <tr>
+            <td style="width: 220px;"><a href="javascript:downloadFile('https://s3.amazonaws.com/mssm-archs4-zoo/Caenorhabditis_elegans_transcript_v1.h5','Caenorhabditis_elegans_transcript.h5','1')">Transcript counts</a></td>
+            <td>Size: 122MB</td>
+            <td style="width: 140px;"><a href="javascript:downloadFile('https://s3.amazonaws.com/mssm-seq-genemapping/Caenorhabditis_elegans_mapping.rda','Caenorhabditis_elegans_mapping.rda','1')">Gene mapping</a></td>
+            <td>Size: < 1MB</td>
+        </tr>
+        <tr>
+            <td style="width: 220px;"><a href="javascript:downloadFile('https://s3.amazonaws.com/mssm-archs4-zoo/Caenorhabditis_elegans_tpm_v1.h5','Caenorhabditis_elegans_tpm.h5','1')">Transcript TPM</a></td>
+            <td>Size: 400MB</td>
+            <td style="width: 140px;"><a href="javascript:downloadFile('https://s3.amazonaws.com/mssm-archs4-zoo/Caenorhabditis_elegans_alignment_quality.rda','Caenorhabditis_elegans_alignment_quality.rda','1')">Alignment quality</a></td>
+            <td>Size: < 1MB</td>
+        </tr>
+        <!--
+        <tr>
+            <td style="width: 220px;"><a href="javascript:downloadFile('https://s3.amazonaws.com/mssm-archs4-zoo/Drosophila_melanogaster_genecount_v1.h5','_genecount.h5','1')">Sample meta information RDA</a></td><td>Size: 24.5MB</td>
+        </tr>
+        -->
+    </table>
+</div>
+</div>
+<hr>
+
+<div style="width:940px; height: 200px" id="Danio_rerio"><h3>Danio rerio</h3>
+<div style="float: right; top: -30px; position: relative; padding-right: 40px;">Last updated: 8/2018 | Samples: 4004 | Series: 223</div>
+    <br>
+<div style="font-size: 16px; padding-left:20px;">
+    
+    <table>
+        <tr>
+            <td style="width: 220px;"><a href="javascript:downloadFile('https://s3.amazonaws.com/mssm-archs4-zoo/Danio_rerio_genecount_v1.h5','Danio_rerio_genecount.h5','1')">Gene counts</a></td>
+            <td style="width: 250px;">Size: 126MB</td>
+            <td style="width: 140px;"><a href="javascript:downloadFile('https://s3.amazonaws.com/mssm-seq-index/Danio_rerio_index.idx','Danio_rerio_index.idx','1')">Kallisto index</a></td>
+            <td>Size: 1.4GB</td>
+        </tr>
+        <tr>
+            <td style="width: 220px;"><a href="javascript:downloadFile('https://s3.amazonaws.com/mssm-archs4-zoo/Danio_rerio_transcript_v1.h5','Danio_rerio_transcript.h5','1')">Transcript counts</a></td>
+            <td>Size: 192MB</td>
+            <td style="width: 140px;"><a href="javascript:downloadFile('https://s3.amazonaws.com/mssm-seq-genemapping/Danio_rerio_mapping.rda','Danio_rerio_mapping.rda','1')">Gene mapping</a></td>
+            <td>Size: < 1MB</td>
+        </tr>
+        <tr>
+            <td style="width: 220px;"><a href="javascript:downloadFile('https://s3.amazonaws.com/mssm-archs4-zoo/Danio_rerio_tpm_v1.h5','Danio_rerio_tpm.h5','1')">Transcript TPM</a></td>
+            <td>Size: 657MB</td>
+            <td style="width: 140px;"><a href="javascript:downloadFile('https://s3.amazonaws.com/mssm-archs4-zoo/Danio_rerio_alignment_quality.rda','Danio_rerio_alignment_quality.rda','1')">Alignment quality</a></td>
+            <td>Size: < 1MB</td>
+        </tr>
+        <!--
+        <tr>
+            <td style="width: 220px;"><a href="javascript:downloadFile('https://s3.amazonaws.com/mssm-archs4-zoo/Drosophila_melanogaster_genecount_v1.h5','_genecount.h5','1')">Sample meta information RDA</a></td><td>Size: 24.5MB</td>
+        </tr>
+        -->
+    </table>
+</div>
+</div>
+<hr>
+
+<div style="width:940px; height: 200px" id="Gallus_gallus"><h3>Gallus gallus</h3>
+<div style="float: right; top: -30px; position: relative; padding-right: 40px;">Last updated: 8/2018 | Samples: 1649 | Series: 82</div>
+    <br>
+<div style="font-size: 16px; padding-left:20px;">
+    
+    <table>
+        <tr>
+            <td style="width: 220px;"><a href="javascript:downloadFile('https://s3.amazonaws.com/mssm-archs4-zoo/Gallus_gallus_genecount_v1.h5','Gallus_gallus_genecount.h5','1')">Gene counts</a></td>
+            <td style="width: 250px;">Size: 41MB</td>
+            <td style="width: 140px;"><a href="javascript:downloadFile('https://s3.amazonaws.com/mssm-seq-index/Gallus_gallus_index.idx','Gallus_gallus_index.idx','1')">Kallisto index</a></td>
+            <td>Size: 754MB</td>
+        </tr>
+        <tr>
+            <td style="width: 220px;"><a href="javascript:downloadFile('https://s3.amazonaws.com/mssm-archs4-zoo/Gallus_gallus_transcript_v1.h5','Gallus_gallus_transcript.h5','1')">Transcript counts</a></td>
+            <td>Size: 62MB</td>
+            <td style="width: 140px;"><a href="javascript:downloadFile('https://s3.amazonaws.com/mssm-seq-genemapping/Gallus_gallus_mapping.rda','Gallus_gallus_mapping.rda','1')">Gene mapping</a></td>
+            <td>Size: < 1MB</td>
+        </tr>
+        <tr>
+            <td style="width: 220px;"><a href="javascript:downloadFile('https://s3.amazonaws.com/mssm-archs4-zoo/Gallus_gallus_tpm_v1.h5','Gallus_gallus_tpm.h5','1')">Transcript TPM</a></td>
+            <td>Size: 186MB</td>
+            <td style="width: 140px;"><a href="javascript:downloadFile('https://s3.amazonaws.com/mssm-archs4-zoo/Gallus_gallus_alignment_quality.rda','Gallus_gallus_alignment_quality.rda','1')">Alignment quality</a></td>
+            <td>Size: < 1MB</td>
+        </tr>
+        <!--
+        <tr>
+            <td style="width: 220px;"><a href="javascript:downloadFile('https://s3.amazonaws.com/mssm-archs4-zoo/Drosophila_melanogaster_genecount_v1.h5','_genecount.h5','1')">Sample meta information RDA</a></td><td>Size: 24.5MB</td>
+        </tr>
+        -->
+    </table>
+</div>
+</div>
+<hr>
+
+<div style="width:940px; height: 200px" id="Rattus_norvegicus"><h3>Rattus norvegicus</h3>
+<div style="float: right; top: -30px; position: relative; padding-right: 40px;">Last updated: 8/2018 | Samples: 3373 | Series: 184</div>
+    <br>
+<div style="font-size: 16px; padding-left:20px;">
+    
+    <table>
+        <tr>
+            <td style="width: 220px;"><a href="javascript:downloadFile('https://s3.amazonaws.com/mssm-archs4-zoo/Rattus_norvegicus_genecount_v1.h5','Rattus_norvegicus_genecount.h5','1')">Gene counts</a></td>
+            <td style="width: 250px;">Size: 110MB</td>
+            <td style="width: 140px;"><a href="javascript:downloadFile('https://s3.amazonaws.com/mssm-seq-index/Rattus_norvegicus_index.idx','Rattus_norvegicus_index.idx','1')">Kallisto index</a></td>
+            <td>Size: 1.0GB</td>
+        </tr>
+        <tr>
+            <td style="width: 220px;"><a href="javascript:downloadFile('https://s3.amazonaws.com/mssm-archs4-zoo/Rattus_norvegicus_transcript_v1.h5','Rattus_norvegicus_transcript.h5','1')">Transcript counts</a></td>
+            <td>Size: 140MB</td>
+            <td style="width: 140px;"><a href="javascript:downloadFile('https://s3.amazonaws.com/mssm-seq-genemapping/Rattus_norvegicus_mapping.rda','Rattus_norvegicus_mapping.rda','1')">Gene mapping</a></td>
+            <td>Size: < 1MB</td>
+        </tr>
+        <tr>
+            <td style="width: 220px;"><a href="javascript:downloadFile('https://s3.amazonaws.com/mssm-archs4-zoo/Rattus_norvegicus_tpm_v1.h5','Rattus_norvegicus_tpm.h5','1')">Transcript TPM</a></td>
+            <td>Size: 431MB</td>
+            <td style="width: 140px;"><a href="javascript:downloadFile('https://s3.amazonaws.com/mssm-archs4-zoo/Rattus_norvegicus_alignment_quality.rda','Rattus_norvegicus_alignment_quality.rda','1')">Alignment quality</a></td>
+            <td>Size: < 1MB</td>
+        </tr>
+        <!--
+        <tr>
+            <td style="width: 220px;"><a href="javascript:downloadFile('https://s3.amazonaws.com/mssm-archs4-zoo/Drosophila_melanogaster_genecount_v1.h5','_genecount.h5','1')">Sample meta information RDA</a></td><td>Size: 24.5MB</td>
+        </tr>
+        -->
+    </table>
+</div>
+</div>
+<hr>
+
+<div style="width:940px; height: 200px" id="Saccharomyces_cerevisiae"><h3>Saccharomyces cerevisiae</h3>
+<div style="float: right; top: -30px; position: relative; padding-right: 40px;">Last updated: 8/2018 | Samples: 3268 | Series: 214</div>
+    <br>
+<div style="font-size: 16px; padding-left:20px;">
+    
+    <table>
+        <tr>
+            <td style="width: 220px;"><a href="javascript:downloadFile('https://s3.amazonaws.com/mssm-archs4-zoo/Saccharomyces_cerevisiae_genecount_v1.h5','Saccharomyces_cerevisiae_genecount.h5','1')">Gene counts</a></td>
+            <td style="width: 250px;">Size: 37MB</td>
+            <td style="width: 140px;"><a href="javascript:downloadFile('https://s3.amazonaws.com/mssm-seq-index/Saccharomyces_cerevisiae_index.idx','Saccharomyces_cerevisiae_index.idx','1')">Kallisto index</a></td>
+            <td>Size: 167MB</td>
+        </tr>
+        <tr>
+            <td style="width: 220px;"><a href="javascript:downloadFile('https://s3.amazonaws.com/mssm-archs4-zoo/Saccharomyces_cerevisiae_transcript_v1.h5','Saccharomyces_cerevisiae_transcript.h5','1')">Transcript counts</a></td>
+            <td>Size: 37MB</td>
+            <td style="width: 140px;"><a href="javascript:downloadFile('https://s3.amazonaws.com/mssm-seq-genemapping/Saccharomyces_cerevisiae_mapping.rda','Saccharomyces_cerevisiae_mapping.rda','1')">Gene mapping</a></td>
+            <td>Size: < 1MB</td>
+        </tr>
+        <tr>
+            <td style="width: 220px;"><a href="javascript:downloadFile('https://s3.amazonaws.com/mssm-archs4-zoo/Saccharomyces_cerevisiae_tpm_v1.h5','Saccharomyces_cerevisiae_tpm.h5','1')">Transcript TPM</a></td>
+            <td>Size: 97MB</td>
+            <td style="width: 140px;"><a href="javascript:downloadFile('https://s3.amazonaws.com/mssm-archs4-zoo/Saccharomyces_cerevisiae_alignment_quality.rda','Saccharomyces_cerevisiae_alignment_quality.rda','1')">Alignment quality</a></td>
+            <td>Size: < 1MB</td>
+        </tr>
+        <!--
+        <tr>
+            <td style="width: 220px;"><a href="javascript:downloadFile('https://s3.amazonaws.com/mssm-archs4-zoo/Drosophila_melanogaster_genecount_v1.h5','_genecount.h5','1')">Sample meta information RDA</a></td><td>Size: 24.5MB</td>
+        </tr>
+        -->
+    </table>
+</div>
+</div>
+<hr>
+
+<div style="width:940px; height: 200px" id="Arabidopsis_thaliana"><h3>Arabidopsis thaliana</h3>
+<div style="float: right; top: -30px; position: relative; padding-right: 40px;">Last updated: 8/2018 | Samples: 7875 | Series: 442</div>
+    <br>
+<div style="font-size: 16px; padding-left:20px;">
+    
+    <table>
+        <tr>
+            <td style="width: 220px;"><a href="javascript:downloadFile('https://s3.amazonaws.com/mssm-archs4-zoo/Arabidopsis_thaliana_genecount_v1.h5','Arabidopsis_thaliana_genecount.h5','1')">Gene counts</a></td>
+            <td style="width: 250px;">Size: 332MB</td>
+            <td style="width: 140px;"><a href="javascript:downloadFile('https://s3.amazonaws.com/mssm-seq-index/Arabidopsis_thaliana_index.idx','Arabidopsis_thaliana_index.idx','1')">Kallisto index</a></td>
+            <td>Size: 929MB</td>
+        </tr>
+        <tr>
+            <td style="width: 220px;"><a href="javascript:downloadFile('https://s3.amazonaws.com/mssm-archs4-zoo/Arabidopsis_thaliana_transcript_v1.h5','Arabidopsis_thaliana_transcript.h5','1')">Transcript counts</a></td>
+            <td>Size: 507MB</td>
+            <td style="width: 140px;"><a href="javascript:downloadFile('https://s3.amazonaws.com/mssm-seq-genemapping/Arabidopsis_thaliana_mapping.rda','Arabidopsis_thaliana_mapping.rda','1')">Gene mapping</a></td>
+            <td>Size: < 1MB</td>
+        </tr>
+        <tr>
+            <td style="width: 220px;"><a href="javascript:downloadFile('https://s3.amazonaws.com/mssm-archs4-zoo/Arabidopsis_thaliana_tpm_v1.h5','Arabidopsis_thaliana_tpm.h5','1')">Transcript TPM</a></td>
+            <td>Size: 1.6GB</td>
+            <td style="width: 140px;"><a href="javascript:downloadFile('https://s3.amazonaws.com/mssm-archs4-zoo/Arabidopsis_thaliana_alignment_quality.rda','Arabidopsis_thaliana_alignment_quality.rda','1')">Alignment quality</a></td>
+            <td>Size: < 1MB</td>
+        </tr>
+        <!--
+        <tr>
+            <td style="width: 220px;"><a href="javascript:downloadFile('https://s3.amazonaws.com/mssm-archs4-zoo/Drosophila_melanogaster_genecount_v1.h5','_genecount.h5','1')">Sample meta information RDA</a></td><td>Size: 24.5MB</td>
+        </tr>
+        -->
+    </table>
+</div>
+</div>
+
+
+</div>
+</div>
+<br>
+
+<style>
+.fl a {
+  text-decoration: none;
+  color: #000;
+
+  -webkit-transition: font-size 0.3s ease, background-color 0.3s ease;
+  -moz-transition: font-size 0.3s ease, background-color 0.3s ease;
+  -o-transition: font-size 0.3s ease, background-color 0.3s ease;
+  -ms-transition: font-size 0.3s ease, background-color 0.3s ease;
+  transition: font-size 0.3s ease, background-color 0.3s ease;
+  display: block;
+}
+
+.fl a:hover {
+  font-weight: bolder;
+  color: #45c19f;
+}
+</style>
+
+<div style="padding:10px; padding-top:10px; padding-bottom: 0px; background-color:#F8F8F8; height:130px; border-top: 1px solid #E7E7E7; text-align: center;">
+<div style="width: 940px; padding-left: 0px; margin: auto;">
+    <div style="float: left; width:260px; padding-left:10px;">
+       <img src="images/mountsinai.png" style="padding-bottom:10px;" height=100><br>
+    </div>
+    
+    <div style="float: left;">
+         <ul style="padding-left: 30px; list-style: none; text-align: left;">
+            <li class="fl"><a href="http://icahn.mssm.edu/research/labs/maayan-laboratory" target="_blank">The Ma'ayan Lab</a></li>
+            <li class="fl"><a href="http://www.lincs-dcic.org/" target="_blank">BD2K-LINCS Data Coordination and Integration Center (DCIC)</a></li>
+            <li class="fl"><a href="http://www.lincsproject.org/">NIH LINCS program</a></li>
+            <li class="fl"><a href="http://bd2k.nih.gov/" target="_blank">NIH Big Data to Knowledge (BD2K)</a></li>
+            <li class="fl"><a href="https://commonfund.nih.gov/idg/index" target="_blank">NIH Illuminating the Druggable Genome (IDG) Program</a></li>
+            <li class="fl"><a href="http://icahn.mssm.edu/" target="_blank">Icahn School of Medicine at Mount Sinai</a></li>
+        </ul>
+    </div>
+    <div style="float: right; color: grey;">
+        <img src="images/dcic.png" height=100><br>
+        © Ma'ayan Lab.
+    </div>
+</div>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-6277639-31', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+<script>
+    $.getJSON("search/getGenes.php", function(data){
+        var genes = data;
+        $("#genesymbolsearch").autoComplete({
+            minChars: 3,
+            source: function(term, suggest){
+                term = term.toLowerCase();
+                var choices = genes;
+                var matches = [];
+                for (i=0; i<choices.length; i++)
+                    if (~choices[i].toLowerCase().indexOf(term)) matches.push(choices[i]);
+                suggest(matches);
+            }
+        });
+    });
+</script>
+
+
+
+</body>
+</html>
+

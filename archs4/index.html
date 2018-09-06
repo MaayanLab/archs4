@@ -72,13 +72,94 @@
             font-size: 12px;
             border-radius: 0;
         }
+        
+        
+        .icon {
+          position: relative;
+          
+          width: 50px;
+          height: 26px;
+          display: inline-block;
+          
+          padding: 6px 0px 0px 0px;
+          border-radius: 0px;
+          color: #fff;
+          text-decoration: none;
+          text-align: center;
+          line-height: 22px;
+          
+        }
+
+        .icon:nth-child(1) { background: white; }
+        .icon:nth-child(2) { background: salmon; }
+        .icon:nth-child(3) { background: gray; }
+
+        /**
+         * The "shine" element
+         */
+
+        .icon:after {
+          content: "";
+          position: absolute;
+          top: -120%;
+          left: -110%;
+          width: 130%;
+          height: 110%;
+          opacity: 0;
+          transform: rotate(30deg);
+          
+          background: rgba(255, 255, 255, 0.13);
+          background: linear-gradient(
+            to right, 
+            rgba(255, 255, 255, 0.13) 0%,
+            rgba(255, 255, 255, 0.13) 77%,
+            rgba(255, 255, 255, 0.5) 92%,
+            rgba(255, 255, 255, 0.0) 100%
+          );
+        }
+
+        /* Hover state - trigger effect */
+
+        .icon:hover:after {
+          opacity: 1;
+          top: -30%;
+          left: -30%;
+          transition-property: left, top, opacity;
+          transition-duration: 0.7s, 0.7s, 0.15s;
+          transition-timing-function: ease;
+        }
+
+        /* Active state */
+
+        .icon:active:after {
+          opacity: 0;
+        }
+        
     </style>
     
     <script type="text/javascript">
+        
+        if (location.protocol != 'https:'){
+         location.href = 'https:' + window.location.href.substring(window.location.protocol.length);
+        }
+        
+        function addemail(){
+            var email = $("#emailfield").val();
+            if(email.length > 1){
+                $.ajax({
+                    url : "search/emaillist.php?email="+email,
+                    dataType: "text",
+                    success : function (data) {
+                        $("#newsletterform").html("<b>Thank you for joining the ARCHS4 newsletter.</b>");
+                    }
+                });
+            }
+        }
+        
         function submitGeneSearch(){
             var geneid = $("#genesymbolsearch").val().toUpperCase();
             if(geneid.length > 1){
-                window.open("search/genepage.php?search=go&gene="+geneid,'_blank');
+                window.open("gene/"+geneid,'_blank');
             }
         }
     </script>
@@ -99,7 +180,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" title="ARCHS4: All RNA-seq and Chip-seq Sequencing" href="index.html">
+                <a class="navbar-brand" title="ARCHS4: Massive mining of publicly available RNA-seq data from human and mouse" href="index.html">
                     <span>
                         <img src="images/archs-42.png" width=160 style="padding-top: 3px;">
                     </span>
@@ -144,7 +225,40 @@
     </div>
     <div style="padding: 10px; padding-bottom: 0px;">
     <p style="font-size: 14px;">
-    ARCHS<sup>4</sup> provides access to gene counts from <a href="https://www.ncbi.nlm.nih.gov/geo/browse/?view=platforms" target="_blank">HiSeq 2000 and HiSeq 2500 platforms</a> for human and mouse experiments from GEO and SRA. The website enables downloading of the data in <a href="http://amp.pharm.mssm.edu/archs4/help.html#abouth5" target="_blank">H5 format</a> for programmatic access as well as a 3-dimensional view of the sample and gene spaces. Search features allow browsing of the data by meta data annotation, ability to submit your own up and down gene sets, and explore matching samples enriched for annotated gene sets. Selected sample sets can be downloaded into a tab separated text file through auto-generated R scripts for further analysis. Reads are aligned with <a href="https://pachterlab.github.io/kallisto/about">Kallisto</a> using a custom cloud computing platform. Human samples are aligned against the GRCh38 human reference genome, and mouse samples against the GRCm38 mouse reference genome. <a href="https://www.biorxiv.org/content/early/2017/09/15/189092" target="_blank"> <span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span> <img src="images/biorxiv.png" height=20></a>
+    ARCHS<sup>4</sup> provides access to gene counts from <a href="https://www.ncbi.nlm.nih.gov/geo/browse/?view=platforms" target="_blank">HiSeq 2000, HiSeq 2500 and NextSeq 500 platforms</a> for human and mouse experiments from GEO and SRA. The website enables downloading of the data in <a href="http://amp.pharm.mssm.edu/archs4/help.html#abouth5" target="_blank">H5 format</a> for programmatic access as well as a 3-dimensional view of the sample and gene spaces. Search features allow browsing of the data by meta data annotation, ability to submit your own up and down gene sets, and explore matching samples enriched for annotated gene sets. Selected sample sets can be downloaded into a tab separated text file through auto-generated R scripts for further analysis. Reads are aligned with <a href="https://pachterlab.github.io/kallisto/about">Kallisto</a> using a custom cloud computing platform. Human samples are aligned against the GRCh38 human reference genome, and mouse samples against the GRCm38 mouse reference genome.
+    
+    <p>
+        Please acknowledge ARCHS<sup>4</sup> in your publications by citing the following reference:<br>
+        Lachmann A, Torre D, Keenan AB, Jagodnik KM, Lee HJ, Wang L, Silverstein MC, Ma’ayan A. Massive mining of publicly available RNA-seq data from human and mouse. Nature Communications 9. Article number: 1366 (2018), doi:10.1038/s41467-018-03751-6
+        <a href="https://www.nature.com/articles/s41467-018-03751-6" target="_blank"> <span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span> <img src="images/naturecomm.png" height=20></a>
+    </p>
+    </p>
+    <hr>
+    
+    <div id="newsletterform" style="text-align: left;">
+        <div style="width: 506px; float: left; margin-right: 10px;">
+        If you would like to receive updates on the ARCHS<sup>4</sup> data and stay informed about new data releases consider signing up for the newsletter.
+        </div>
+        
+        <form class="form-inline my-2 my-lg-0" style="padding-top: 2px;" action="javascript:addemail()">
+          <input class="form-control mr-sm-2" id="emailfield" type="email" placeholder="Email address" style="width: 260px;">
+          <button class="btn btn-info my-2 my-sm-0" type="button" onclick="addemail();">Keep Me Updated</button>
+        </form>
+    </div>
+    
+    <hr>
+    <div id="newsletterform" style="text-align: left;">
+        <div style="width: 160px; float: left; margin-right: 10px; padding-left: 20px;">
+        <a href="archs4zoo.html"><img src="images/archs4zoo.png" width=120></a>
+        </div>
+        
+        The ARCHS<sup>4</sup> database now includes 35000 samples from additional species, such as C. elegans and Drosophila melanogaster. Expression data for genes and transcripts can be downloaded in H5 format from the <a href="archs4zoo.html">ARCHS<sup>4</sup> ZOO download section</a>.
+        <br><br>
+    </div>
+    
+    <hr>
+    <p style="text-align: left;">
+        If you have your own RNA-seq data in FASTQ format and would like to process it with the ARCHS<sup>4</sup> pipeline you can use our new web service <b><a class="icon" href="https://amp.pharm.mssm.edu/cloudalignment/elysium.html" target="_blank" style="color: magenta">Elysium</a></b>. Elysium is using the ARCHS<sup>4</sup> pipeline to align FASTQ files. It generates ARCHS<sup>4</sup> compatible gene expression profiles ready for downstream analyses.
     </p>
     
     </div>
@@ -157,7 +271,11 @@
      <div id="donut-charts-b"></div></div>
      <div style="float: left; width: 319px; background-color: #fcfcfc;"><h4>Mouse <img src="images/mouse_foot_small.png" height=20></h4>
      <div id="donut-charts-c"></div></div>
+     <hr style="magrin: 0px;">
      <br style="clear: left;" />
+     <div id="userstat" style="padding: 15px; text-align: center;"> </div>
+     
+     
      
      <!--
      <hr style="magrin: 0px;">
@@ -354,7 +472,6 @@
         }
 
         var setCenterText = function(thisDonut, cate, valu) {
-            console.log("setCenterText");
             charts.selectAll('.value').text('');
             charts.selectAll('.type').text('');
             charts.selectAll('.samplefield').text('');
@@ -606,6 +723,12 @@
                 suggest(matches);
             }
         });
+    });
+    
+    $.getJSON("search/userstat.php", function(data){
+        var stats = data;
+        stattext = "<b>Gene lookups </b>"+stats["gene_search_count"]+" | <b>Bulk file downloads </b>"+stats["bulk_download"]+" | <b>Sample search downloads </b>"+stats["sample_download"];
+        $('#userstat').html(stattext);
     });
 </script>
 

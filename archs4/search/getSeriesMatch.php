@@ -13,37 +13,29 @@ header('Content-type: application/json');
 
 if(isset($_GET["search"])){
     
-    if($_GET["species"] == "mouse"){
-        $species = "Mus Musculus";
-    }
-    else{
-        $species = "Homo Sapiens";
-    }
     
+    $search = str_replace("_", "", $_GET["search"]);
+    $search = str_replace("-", "", $search);
+    $search = str_replace("/", "", $search);
+    $search = str_replace(" ", "", $search);
+    $search = str_replace("\\.", "", $search);
+    $search = "%".$search."%";
     
-    $sql = "SELECT DISTINCT(gse) FROM samplemapping WHERE gsm IN (SELECT DISTINCT(gsmid) FROM gsm WHERE MATCH (value) AGAINST ('".$_GET["search"]."' IN BOOLEAN MODE));";
-    $result = $conn->query($sql);
+    $sql="SELECT DISTINCT(gse) FROM sample_meta WHERE tissue_mod LIKE ? AND species = ?;";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param('ss', "%".$search."%", $_GET["species"]);
+    $stmt->execute();
+    $stmt->bind_result($data[0]);
+    $stmt->store_result();
     
     $series = [];
-    if ($result->num_rows > 0) {
-        while($row = $result->fetch_assoc()) {
-            $series[$row["gse"]] = $row["gse"];
+    if ($stmt->num_rows > 0) {
+        while($stmt->fetch()) {
+            $series[$data[0]] = $data[0];
         }
     }
     
-    $sql = "SELECT DISTINCT(gse) FROM samplemapping WHERE gsm IN (SELECT DISTINCT(gsmid) FROM gsm WHERE attribute='Sample_organism_ch1' AND value='".$species."');";
-    $result = $conn->query($sql);
-    $rnaseqSeries = [];
-
-    if ($result->num_rows > 0) {
-        while($row = $result->fetch_assoc()) {
-            $val = $row["gse"];
-            $rnaseqSeries[$val] = $val;
-        }
-    }
-    
-    $tseries = array_intersect_key($series, $rnaseqSeries);
-    $arr = array ($_GET["search"], array_values($tseries));
+    $arr = array ($_GET["search"], array_values($series));
     echo json_encode($arr);
 }
 

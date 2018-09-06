@@ -1,0 +1,8 @@
+<IfModule mod_rewrite.c>
+
+RewriteEngine on
+
+RewriteRule ^gene/(.+)$ search/genepage.php?search=go&gene=$1
+RewriteRule ^series/(.+)$ search/seriespage.php?search=$1
+
+</IfModule>

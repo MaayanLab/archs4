@@ -9,17 +9,24 @@ require 'dbconfig.php';
 if(isset($_GET["search"])){
     
     if($_GET["type"] == "tissue"){
-        $sql = "SELECT * FROM tissue_expression WHERE gene='".$_GET["search"]."' AND organism='".$_GET["species"]."';";
-        $result = $conn->query($sql);
+        
         $a=array("System");
         $text = "";
-        if ($result->num_rows > 0) {
-            while($row = $result->fetch_assoc()) {
-                $id = "System.".$row["system"].".".$row["tissue"].".".$row["celltype"];
-                array_push($a, "System.".$row["system"].",,,,,,");
-                array_push($a, "System.".$row["system"].".".$row["tissue"].",,,,,,");
-                $data = $row["min"].",".$row["q25"].",".$row["median"].",".$row["q75"].",".$row["max"].",".$row["color"]."\n";
-                $text = $text."$id,$data";
+        
+        $sql="SELECT system, tissue, celltype, min, q25, median, q75, max, color FROM tissue_expression WHERE gene=? AND organism=?;";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param('ss', $_GET["search"], $_GET["species"]);
+        $stmt->execute();
+        $stmt->bind_result($data[0], $data[1], $data[2], $data[3], $data[4], $data[5], $data[6], $data[7], $data[8]);
+        $stmt->store_result();
+        
+        if ($stmt->num_rows > 0) {
+            while ($stmt->fetch()) {
+                $id = "System.".$data[0].".".trim($data[1]).".".trim($data[2]);
+                array_push($a, "System.".$data[0].",,,,,,");
+                array_push($a, "System.".$data[0].".".trim($data[1]).",,,,,,");
+                $dat = $data[3].",".$data[4].",".$data[5].",".$data[6].",".$data[7].",".$data[8]."\n";
+                $text = $text."$id,$dat";
             }
         }
         $b=array_unique($a);
@@ -28,20 +35,26 @@ if(isset($_GET["search"])){
         foreach ($b as &$value) {
             echo $value."\n";
         }
-        echo $text;
+        echo trim($text);
     }
     else{
-        $sql = "SELECT * FROM cellline_expression WHERE gene='".$_GET["search"]."';";
-        $result = $conn->query($sql);
+        
         $a=array("Cell line");
         $text = "";
-        if ($result->num_rows > 0) {
-            while($row = $result->fetch_assoc()) {
-                $id = "Cell line.".$row["tissue"].".".$row["cellline"];
-                array_push($a, "Cell line.".$row["tissue"].",,,,,,");
-                
-                $data = $row["min"].",".$row["q25"].",".$row["median"].",".$row["q75"].",".$row["max"].",".$row["color"]."\n";
-                $text = $text."$id,$data";
+        
+        $sql="SELECT tissue, cellline, min, q25, median, q75, max, color FROM cellline_expression WHERE gene=?;";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param('s', $_GET["search"]);
+        $stmt->execute();
+        $stmt->bind_result($data[0], $data[1], $data[2], $data[3], $data[4], $data[5], $data[6], $data[7]);
+        $stmt->store_result();
+        
+        if ($stmt->num_rows > 0) {
+            while ($stmt->fetch()) {
+                $id = "Cell line.".$data[0].".".trim($data[1]);
+                array_push($a, "Cell line.".$data[0].",,,,,");
+                $dat = $data[2].",".$data[3].",".$data[4].",".$data[5].",".$data[6].",".$data[7]."\n";
+                $text = $text."$id,$dat";
             }
         }
         $b=array_unique($a);
@@ -50,7 +63,7 @@ if(isset($_GET["search"])){
         foreach ($b as &$value) {
             echo $value."\n";
         }
-        echo $text;
+        echo trim($text);
     }
 }
 ?>

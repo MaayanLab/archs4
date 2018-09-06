@@ -10,7 +10,7 @@
     <link rel="icon" href="images/archs-icon.png?v=2" type="image/png">
 
     <script src="scripts/three.min.js"></script>
-    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
     <script src="scripts/jquery-3.1.1.min.js"></script>
     <script src="scripts/d3.layout.cloud.js"></script>
     <script src="scripts/tags.js"></script>
@@ -99,10 +99,27 @@
         background-image: url("images/congruent_pentagon2.png");
         background-repeat: repeat;
     }
-    
     </style>
     
     <script type="text/javascript">
+        
+        if (location.protocol != 'https:'){
+         location.href = 'https:' + window.location.href.substring(window.location.protocol.length);
+        }
+        
+        function addemail(){
+            var email = $("#emailfield").val();
+            if(email.length > 1){
+                $.ajax({
+                    url : "search/emaillist.php?email="+email,
+                    dataType: "text",
+                    success : function (data) {
+                        $("#newsletterform").html("<b>Thank you for joining the ARCHS4 newsletter.</b>");
+                    }
+                });
+            }
+        }
+        
         function submitGeneSearch(){
             var geneid = $("#genesymbolsearch").val().toUpperCase();
             if(geneid.length > 1){
@@ -169,8 +186,6 @@
     </nav>
 </div>
 
-
-
 <div style="background-color: white; width: 960px; margin:0 auto; border: 1px solid #E3E3E3; padding-left: 20px; padding-right:20px;">
 <div id="helphead"><h2>ARCHS<sup>4</sup>  Help</h2></div>
 <hr>
@@ -232,6 +247,16 @@
         <h3><a href="javascript:scrollPage('terms')" style="color:black;">Terms of use</a></h3>
     </div>
 </div>
+<hr>
+<div id="newsletterform">
+    <div style="width: 500px; float: left; margin-right: 10px;">
+    If you would like to receive updates on the ARCHS4 data and stay informed about new data releases consider signing up for the newsletter.
+    </div>
+    <form class="form-inline my-2 my-lg-0" style="padding-top: 2px;" action="javascript:addemail()">
+      <input class="form-control mr-sm-2" id="emailfield" type="email" placeholder="Email address" style="width: 260px;">
+      <button class="btn btn-info my-2 my-sm-0" type="button" onclick="addemail();">Keep Me Updated</button>
+    </form>
+</div>
 
 <hr>
 <div style="text-align: center;">
@@ -244,7 +269,7 @@
 
 <h4 id="about">About ARCHS<sup>4</sup></h4>
 <p style="font-size: 14px;">
-ARCHS<sup>4</sup> provides access to gene counts from HiSeq 2000 and HiSeq 2500 platforms for human and mouse experiments. The website allows download of the data in H5 format for programmatic access as well as a 3-dimensional view of the sample space. Search features allow browsing of the data by meta data annotation, signature similarity and functional enrichment. Selected sample sets can be downloaded into a tab separated through auto-generated R scripts for further analysis. Reads are aligned with <a href="https://pachterlab.github.io/kallisto/about">Kallisto</a> using a custom cloud computing platform. Human samples are aligned against GRCh38 cdna reference and mouse samples against GRCm38 cdna. All processable files from the GEO/SRA database since July 2017 are processed and available for download.
+ARCHS<sup>4</sup> provides access to gene counts from HiSeq 2000 and HiSeq 2500 platforms for human and mouse experiments. The website allows download of the data in H5 format for programmatic access as well as a 3-dimensional view of the sample space. Search features allow browsing of the data by meta data annotation, signature similarity and functional enrichment. Selected sample sets can be downloaded into a tab separated through auto-generated R scripts for further analysis. Reads are aligned with <a href="https://pachterlab.github.io/kallisto/about">Kallisto</a> using a custom cloud computing platform. Human samples are aligned against GRCh38 cdna reference and mouse samples against GRCm38 cdna. All processable files from the GEO/SRA database since June 2018 are processed and available for download.
 </p>
 <br>
 <h4 id="downloadfiles">Download files</h4>
@@ -981,15 +1006,16 @@ The tissue and cell line expression atlas are calculated from samples in ARCHS4.
 <h3 id="terms">Terms of use <i class="glyphicon glyphicon-arrow-up" style="cursor:pointer; font-size: 16;" onclick="scrollPage('nav');"></i></h3>
 
 <h4>Use</h4>
-
-<a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a> This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution 4.0 International License</a>.
-<br>All data is free to use for non-commercial purposes. For commercial use please contact <a href="http://www.ip.mountsinai.org/">MSIP</a>.
+Source code is available under the <a href="https://www.apache.org/licenses/LICENSE-2.0">Apache Licence 2.0</a>. Provided gene expression files available
+ under the <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution 4.0 International License</a><a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a>.
+<br>All data is free to use for non-commercial purposes. For commercial use please contact <a href="https://www.ip.mountsinai.org/">MSIP</a>.
 <h4>Citation</h4>
 
-Within any publication that uses any methods or results inspired by ARCHS<sup>4</sup>, please cite:<br>
-<a href="http://www.biorxiv.org/content/early/2017/09/15/189092">http://www.biorxiv.org/content/early/2017/09/15/189092</a>
-<br><br>
-ARCHS4 is not yet peer reviewed.
+<p>
+    Please acknowledge ARCHS<sup>4</sup> in your publications by citing the following reference:<br>
+    Lachmann A, Torre D, Keenan AB, Jagodnik KM, Lee HJ, Wang L, Silverstein MC, Ma’ayan A. Massive mining of publicly available RNA-seq data from human and mouse. Nature Communications 9. Article number: 1366 (2018), doi:10.1038/s41467-018-03751-6
+    <a href="https://www.nature.com/articles/s41467-018-03751-6" target="_blank"> <span class="glyphicon glyphicon-share-alt" aria-hidden="true"></span> <img src="images/naturecomm.png" height=20></a>
+</p>
 
 <h4>Disclaimer</h4>
 ARCHS<sup>4</sup> is not to be used for treating or diagnosing human subjects.
@@ -1031,12 +1057,12 @@ In no event will the Ma'ayan lab or any of its members be liable for any damages
     
     <div style="float: left;">
          <ul style="padding-left: 30px; list-style: none; text-align: left;">
-            <li class="fl"><a href="http://icahn.mssm.edu/research/labs/maayan-laboratory" target="_blank">The Ma'ayan Lab</a></li>
-            <li class="fl"><a href="http://www.lincs-dcic.org/" target="_blank">BD2K-LINCS Data Coordination and Integration Center (DCIC)</a></li>
-            <li class="fl"><a href="http://www.lincsproject.org/">NIH LINCS program</a></li>
-            <li class="fl"><a href="http://bd2k.nih.gov/" target="_blank">NIH Big Data to Knowledge (BD2K)</a></li>
+            <li class="fl"><a href="https://icahn.mssm.edu/research/labs/maayan-laboratory" target="_blank">The Ma'ayan Lab</a></li>
+            <li class="fl"><a href="https://www.lincs-dcic.org/" target="_blank">BD2K-LINCS Data Coordination and Integration Center (DCIC)</a></li>
+            <li class="fl"><a href="https://www.lincsproject.org/">NIH LINCS program</a></li>
+            <li class="fl"><a href="https://bd2k.nih.gov/" target="_blank">NIH Big Data to Knowledge (BD2K)</a></li>
             <li class="fl"><a href="https://commonfund.nih.gov/idg/index" target="_blank">NIH Illuminating the Druggable Genome (IDG) Program</a></li>
-            <li class="fl"><a href="http://icahn.mssm.edu/" target="_blank">Icahn School of Medicine at Mount Sinai</a></li>
+            <li class="fl"><a href="https://icahn.mssm.edu/" target="_blank">Icahn School of Medicine at Mount Sinai</a></li>
         </ul>
     </div>
     <div style="float: right; color: grey;">

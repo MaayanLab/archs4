@@ -13,8 +13,6 @@ header('Content-type: application/json');
 
 if(isset($_GET["search"])){
     
-    
-    
     if($_GET["search"] == "platform"){
         
         $sql = "SELECT SUM(count) AS platcount FROM platformstat;";

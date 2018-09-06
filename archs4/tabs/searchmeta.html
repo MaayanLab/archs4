@@ -1,0 +1,406 @@
+<h4>Metadata Search</h4>
+<p>
+  Human examples:<br>
+  <a class="exampleTerm" onclick="fillExample('GSE81547')">GSE81547</a>,
+  <a class="exampleTerm" onclick="fillExample('GSM2679484')">GSM2679484</a>,
+  <a class="exampleTerm" onclick="fillExample('Macrophage')">Macrophage</a>,
+  <a class="exampleTerm" onclick="fillExample('Brain')">Brain</a>
+</p>
+
+<div>
+  <input id="sigNameInput" type="text" class="form-control tt-input" placeholder="Search for samples / GSE / GSM" autocomplete="off" spellcheck="false" dir="auto" style="width: 215px; position: relative; vertical-align: top; background-color: transparent; padding:4px; display: inline; border-radius: 4px 0px 0px 4px;">
+  <button id="sigNameBtn" type="button" onclick="searchMeta()" style="height: 34px; padding:4px;">Search</button>
+</div>
+
+<br>
+
+<h4>Tissue Types</h4>
+
+<ul id="menu-v1" class="menu-v">
+
+  <li><a>Cardiovascular System</a>
+    <ul class="sub">
+      <li><a>Heart</a>
+        <ul class="sub">
+            <li><a class="exampleTerm" onclick="fillExample('Heart')">Heart (Bulk Tissue)</a></li>
+            <li><a class="exampleTerm" onclick="fillExample('Atrium')">Atrium</a></li>
+            <li><a class="exampleTerm" onclick="fillExample('Cardiac Muscle Fiber')">Cardiac Muscle Fiber</a></li>
+            <li><a class="exampleTerm" onclick="fillExample('Pericardium')">Pericardium</a></li>
+            <li><a class="exampleTerm" onclick="fillExample('Valve')">Valve</a></li>
+            <li><a class="exampleTerm" onclick="fillExample('Ventricle')">Ventricle</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+
+  <li><a>Connective Tissue</a>
+    <ul class="sub">
+      <li><a>Adipose Tissue</a>
+        <ul class="sub">
+            <li><a class="exampleTerm" onclick="fillExample('Adipose')">Adipose (Bulk Tissue)</a></li>
+            <li><a class="exampleTerm" onclick="fillExample('Adipocyte')">Adipocyte</a></li>
+        </ul>
+      </li>
+
+      <li><a>Bone</a>
+        <ul class="sub">
+            <li><a class="exampleTerm" onclick="fillExample('Myofibroblast')">Myofibroblast</a></li>
+            <li><a class="exampleTerm" onclick="fillExample('Osteoblast')">Osteoblast</a></li>
+            <li><a class="exampleTerm" onclick="fillExample('Stromal Cell')">Stromal Cell</a></li>
+        </ul>
+      </li>
+      <li><a>Bone Marrow</a>
+        <ul class="sub">
+            <li><a class="exampleTerm" onclick="fillExample('Bone Marrow')">Bone Marrow (Bulk Tissue)</a></li>
+        </ul>
+      </li>
+      <li><a>Cartilage</a>
+        <ul class="sub">
+            <li><a class="exampleTerm" onclick="fillExample('Chondrocyte')">Chondrocyte</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  
+  <li><a>Digestive System</a>
+    <ul class="sub">
+      <li><a>Esophagus</a>
+        <ul class="sub">
+            <li><a class="exampleTerm" onclick="fillExample('Esophagus')">Esophagus (Bulk Tissue)</a></li>
+        </ul>
+      </li>
+      
+      <li><a>Intestine</a>
+        <ul class="sub">
+            <li><a class="exampleTerm" onclick="fillExample('Colon')">Colon (Bulk Tissue)</a></li>
+            <li><a class="exampleTerm" onclick="fillExample('Colonic Mucosa')">Colonic Mucosa</a></li>
+            <li><a class="exampleTerm" onclick="fillExample('Intestinal Epithelial Cell')">Intestinal Epithelial Cell</a></li>
+            <li><a class="exampleTerm" onclick="fillExample('Small Intestine')">Small Intestine (Bulk Tissue)</a></li>
+        </ul>
+      </li>
+      <li><a>Liver</a>
+        <ul class="sub">
+            <li><a class="exampleTerm" onclick="fillExample('Liver')">Liver (Bulk Tissue)</a></li>
+            <li><a class="exampleTerm" onclick="fillExample('Hepatic Stellate Cell')">Hepatic Stellate Cell</a></li>
+            <li><a class="exampleTerm" onclick="fillExample('Hepatocyte')">Hepatocyte</a></li>
+            <li><a class="exampleTerm" onclick="fillExample('Primary Liver Cell')">Primary Liver Cell</a></li>
+        </ul>
+      </li>
+      <li><a>Pancreas</a>
+        <ul class="sub">
+            <li><a class="exampleTerm" onclick="fillExample('Alpha Cell')">Alpha Cell</a></li>
+            <li><a class="exampleTerm" onclick="fillExample('Beta Cell')">Beta Cell</a></li>
+            <li><a class="exampleTerm" onclick="fillExample('Pancreatic Islet')">Pancreatic Islet</a></li>
+        </ul>
+      </li>
+      <li><a>Stomach</a>
+        <ul class="sub">
+            <li><a class="exampleTerm" onclick="fillExample('Gastric Epithelial Cell')">Gastric Epithelial Cell</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  
+  <li><a>Immune System</a>
+    <ul class="sub">
+      <li><a>Granulocytic</a>
+        <ul class="sub">
+            <li><a class="exampleTerm" onclick="fillExample('Granulocyte')">Granulocyte</a></li>
+            <li><a class="exampleTerm" onclick="fillExample('Neutrophil')">Neutrophil</a></li>
+        </ul>
+      </li>
+      <li><a>Lymphiod</a>
+        <ul class="sub">
+            <li><a class="exampleTerm" onclick="fillExample('Blymphocyte')">Blymphocyte</a></li>
+            <li><a class="exampleTerm" onclick="fillExample('Plasma Cell')">Plasma Cell</a></li>
+            <li><a class="exampleTerm" onclick="fillExample('Plasmacytoid Dendritic Cell')">Plasmacytoid Dendritic Cell</a></li>
+            <li><a class="exampleTerm" onclick="fillExample('Tlymphocyte')">Tlymphocyte</a></li>
+        </ul>
+      </li>
+      <li><a>Myeloid</a>
+        <ul class="sub">
+            <li><a class="exampleTerm" onclick="fillExample('Alveolar')">Alveolar Macrophage</a></li>
+            <li><a class="exampleTerm" onclick="fillExample('Dendritic')">Dendritic Cell</a></li>
+            <li><a class="exampleTerm" onclick="fillExample('Kupffer')">Kupffer Cell</a></li>
+            <li><a class="exampleTerm" onclick="fillExample('Macrophage')">Macrophage</a></li>
+            <li><a class="exampleTerm" onclick="fillExample('Macroglia')">Macroglia</a></li>
+        </ul>
+      </li>
+      <li><a>Spleen</a>
+        <ul class="sub">
+            <li><a class="exampleTerm" onclick="fillExample('Spleen')">Spleen (Bulk Tissue)</a></li>
+        </ul>
+      </li>
+      <li><a>Thymus</a>
+        <ul class="sub">
+            <li><a class="exampleTerm" onclick="fillExample('Thymus')">Thymus (Bulk Tissue)</a></li>
+            <li><a class="exampleTerm" onclick="fillExample('Thymocyte')">Thymocyte</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  
+  <li><a>Integumentary System</a>
+    <ul class="sub">
+      <li><a>Skin</a>
+        <ul class="sub">
+            <li><a class="exampleTerm" onclick="fillExample('Skin')">Skin (Bulk Tissue)</a></li>
+            <li><a class="exampleTerm" onclick="fillExample('Basal Cell')">Basal Cell</a></li>
+            <li><a class="exampleTerm" onclick="fillExample('Fibroblast')">Fibroblast</a></li>
+            <li><a class="exampleTerm" onclick="fillExample('Hair Follicle')">Hair Follicle</a></li>
+            <li><a class="exampleTerm" onclick="fillExample('Keratinocyte')">Keratinocyte</a></li>
+            <li><a class="exampleTerm" onclick="fillExample('Melanocyte')">Melanocyte</a></li>
+            
+        </ul>
+      </li>
+    </ul>
+  </li>
+  
+  <li><a>Muscular System</a>
+    <ul class="sub">
+      <li><a>Skeletal Muscle</a>
+        <ul class="sub">
+            <li><a class="exampleTerm" onclick="fillExample('Skeletal Muscle')">Skeletal Muscle (Bulk Tissue)</a></li>
+            <li><a class="exampleTerm" onclick="fillExample('Myoblast')">Myoblast</a></li>
+        </ul>
+      </li>
+      
+      <li><a>Smooth Muscle</a>
+        <ul class="sub">
+            <li><a class="exampleTerm" onclick="fillExample('Airway Smooth Muscle<')">Airway Smooth Muscle</a></li>
+            <li><a class="exampleTerm" onclick="fillExample('Myofibroblast')">Myofibroblast</a></li>
+            <li><a class="exampleTerm" onclick="fillExample('Respiratory Smooth Muscle')">Respiratory Smooth Muscle</a></li>
+            <li><a class="exampleTerm" onclick="fillExample('Vascular Smooth Muscle')">Vascular Smooth Muscle</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  
+  <li><a>Nervous System</a>
+    <ul class="sub">
+      <li><a>CNS</a>
+        <ul class="sub">
+            <li><a class="exampleTerm" onclick="fillExample('Astrocyte')">Astrocyte</a></li>
+            <li><a class="exampleTerm" onclick="fillExample('Cerebellum')">Cerebellum</a></li>
+            <li><a class="exampleTerm" onclick="fillExample('Cerebral Cortex')">Cerebral Cortex</a></li>
+            <li><a class="exampleTerm" onclick="fillExample('Hypothalamus')">Hypothalamus</a></li>
+            <li><a class="exampleTerm" onclick="fillExample('Medula')">Medula</a></li>
+            <li><a class="exampleTerm" onclick="fillExample('Midbrain')">Midbrain</a></li>
+            <li><a class="exampleTerm" onclick="fillExample('Neuron')">Neuron</a></li>
+            <li><a class="exampleTerm" onclick="fillExample('Oligodendrocyte')">Oligodendrocyte</a></li>
+            <li><a class="exampleTerm" onclick="fillExample('Pons')">Pons</a></li>
+            <li><a class="exampleTerm" onclick="fillExample('Spinal Cord')">Spinal Cord</a></li>
+            <li><a class="exampleTerm" onclick="fillExample('Thalamus')">Thalamus</a></li>
+        </ul>
+      </li>
+      <li><a>Eye</a>
+        <ul class="sub">
+            <li><a class="exampleTerm" onclick="fillExample('Retina')">Retina</a></li>
+        </ul>
+      </li>
+      <li><a>PNS</a>
+        <ul class="sub">
+            <li><a class="exampleTerm" onclick="fillExample('Motor Neuron')">Motor Neuron</a></li>
+            <li><a class="exampleTerm" onclick="fillExample('Sensory Neuron')">Sensory Neuron</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  
+  <li><a>Respiratory System</a>
+    <ul class="sub">
+      <li>Lung
+        <ul class="sub">
+            <li><a class="exampleTerm" onclick="fillExample('Alveolar')">Alveolar Cell Type II</a></li>
+            <li><a class="exampleTerm" onclick="fillExample('Lung')">Lung (Bulk Tissue)</a></li>
+            <li><a class="exampleTerm" onclick="fillExample('Lung Epithelial')">Lung Epithelial Cell</a></li>
+        </ul>
+      </li>
+      <li><a>Trachea</a>
+        <ul class="sub">
+            <li><a class="exampleTerm" onclick="fillExample('Trachea')">Trachea (Bulk Tissue)</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  
+  <li><a>Urogenital System</a>
+    <ul class="sub">
+      <li><a>Breast</a>
+        <ul class="sub">
+            <li><a class="exampleTerm" onclick="fillExample('Breast')">Breast (Bulk Tissue)</a></li>
+            <li><a class="exampleTerm" onclick="fillExample('Mammary Gland')">Mammary Gland</a></li>
+        </ul>
+      </li>
+      <li><a>Kidney</a>
+        <ul class="sub">
+            <li><a class="exampleTerm" onclick="fillExample('Kidney')">Kidney (Bulk Tissue)</a></li>
+            <li><a class="exampleTerm" onclick="fillExample('Podocyte')">Podocyte</a></li>
+            <li><a class="exampleTerm" onclick="fillExample('Renal Cortex')">Renal Cortex</a></li>
+        </ul>
+      </li>
+      
+      <li><a>Ovary</a>
+        <ul class="sub">
+            <li><a class="exampleTerm" onclick="fillExample('Ovary')">Ovary (Bulk Tissue)</a></li>
+            <li><a class="exampleTerm" onclick="fillExample('Granulosa')">Granulosa Cell</a></li>
+            <li><a class="exampleTerm" onclick="fillExample('Oocyte')">Oocyte</a></li>
+        </ul>
+      </li>
+      
+      <li><a>Testis</a>
+        <ul class="sub">
+            <li><a class="exampleTerm" onclick="fillExample('Testis')">Testis (Bulk Tissue)</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<br>
+
+<h4>Cell Lines</h4>
+
+<ul id="menu-v2" class="menu-v">
+  <li><a>Bone</a>
+    <ul class="sub">
+      <li><a class="exampleTerm" onclick="fillExample('MG63')">MG63</a></li>
+      <li><a class="exampleTerm" onclick="fillExample('K562')">K562</a></li>
+    </ul>
+  </li>
+  
+  <li><a>Brain</a>
+    <ul class="sub">
+      <li><a class="exampleTerm" onclick="fillExample('DAOY')">DAOY</a></li>
+      <li><a class="exampleTerm" onclick="fillExample('IMR32')">IMR32</a></li>
+      <li><a class="exampleTerm" onclick="fillExample('SKNSH')">SKNSH</a></li>
+    </ul>
+  </li>
+  
+  <li><a>Breast / Mammary</a>
+    <ul class="sub">
+      <li><a class="exampleTerm" onclick="fillExample('MCF7')">MCF7</a></li>
+      <li><a class="exampleTerm" onclick="fillExample('MCF10')">MCF10</a></li>
+      <li><a class="exampleTerm" onclick="fillExample('MDAMB231')">MDAMB231</a></li>
+      <li><a class="exampleTerm" onclick="fillExample('MDAMB468')">MDAMB468</a></li>
+      <li><a class="exampleTerm" onclick="fillExample('SKBR3')">SKBR3</a></li>
+      <li><a class="exampleTerm" onclick="fillExample('T47D')">T47D</a></li>
+    </ul>
+  </li>
+  
+  <li><a>Crevix</a>
+    <ul class="sub">
+      <li><a class="exampleTerm" onclick="fillExample('HELA')">HELA</a></li>
+    </ul>
+  </li>
+  
+  <li><a>Colon</a>
+    <ul class="sub">
+      <li><a class="exampleTerm" onclick="fillExample('HCT116')">HCT116</a></li>
+      <li><a class="exampleTerm" onclick="fillExample('HT29')">HT29</a></li>
+      <li><a class="exampleTerm" onclick="fillExample('RKO')">RKO</a></li>
+    </ul>
+  </li>
+  
+  <li><a>Connective</a>
+    <ul class="sub">
+      <li><a class="exampleTerm" onclick="fillExample('HT1080')">HT1080</a></li>
+      <li><a class="exampleTerm" onclick="fillExample('NHDF')">NHDF</a></li>
+    </ul>
+  </li>
+  
+  <li><a>Endothelial</a>
+    <ul class="sub">
+      <li><a class="exampleTerm" onclick="fillExample('HUVEC')">HUVEC</a></li>
+    </ul>
+  </li>
+  
+  <li><a>Kidney</a>
+    <ul class="sub">
+      <li><a class="exampleTerm" onclick="fillExample('293F')">293F</a></li>
+      <li><a class="exampleTerm" onclick="fillExample('FLPIN TREX 293')">FLPIN TREX 293</a></li>
+      <li><a class="exampleTerm" onclick="fillExample('HEK293')">HEK293</a></li>
+    </ul>
+  </li>
+  
+  <li><a>Liver</a>
+    <ul class="sub">
+      <li><a class="exampleTerm" onclick="fillExample('HEPG2')">HEPG2</a></li>
+    </ul>
+  </li>
+  
+  <li><a>Lung</a>
+    <ul class="sub">
+      <li><a class="exampleTerm" onclick="fillExample('A549')">A549</a></li>
+      <li><a class="exampleTerm" onclick="fillExample('H1299')">H1299</a></li>
+      <li><a class="exampleTerm" onclick="fillExample('IMR90')">IMR90</a></li>
+      <li><a class="exampleTerm" onclick="fillExample('MRC5')">MRC5</a></li>
+      <li><a class="exampleTerm" onclick="fillExample('NCIH460')">NCIH460</a></li>
+      <li><a class="exampleTerm" onclick="fillExample('NHBE')">NHBE</a></li>
+    </ul>
+  </li>
+  
+  <li><a>Lymphoid</a>
+    <ul class="sub">
+      <li><a class="exampleTerm" onclick="fillExample('JURKAT')">JURKAT</a></li>
+      <li><a class="exampleTerm" onclick="fillExample('MT4')">MT4</a></li>
+      <li><a class="exampleTerm" onclick="fillExample('NALM6')">NALM6</a></li>
+      <li><a class="exampleTerm" onclick="fillExample('REH')">REH</a></li>
+      <li><a class="exampleTerm" onclick="fillExample('RPMI8226')">RPMI8226</a></li>
+    </ul>
+  </li>
+  
+  <li><a>Muscle</a>
+    <ul class="sub">
+      <li><a class="exampleTerm" onclick="fillExample('LHCNM2')">LHCNM2</a></li>
+    </ul>
+  </li>
+  
+  <li><a>Myeloid</a>
+    <ul class="sub">
+      <li><a class="exampleTerm" onclick="fillExample('THP1')">THP1</a></li>
+      <li><a class="exampleTerm" onclick="fillExample('U937')">U937</a></li>
+    </ul>
+  </li>
+  
+  <li><a>Ovary</a>
+    <ul class="sub">
+      <li><a class="exampleTerm" onclick="fillExample('ES2')">ES2</a></li>
+      <li><a class="exampleTerm" onclick="fillExample('SKOV3')">SKOV3</a></li>
+    </ul>
+  </li>
+  
+  <li><a>Pancreas</a>
+    <ul class="sub">
+      <li><a class="exampleTerm" onclick="fillExample('PANC1')">PANC1</a></li>
+    </ul>
+  </li>
+  
+  <li><a>Placenta</a>
+    <ul class="sub">
+      <li><a class="exampleTerm" onclick="fillExample('JEG3')">JEG3</a></li>
+    </ul>
+  </li>
+  
+  <li><a>Prostate</a>
+    <ul class="sub">
+      <li><a class="exampleTerm" onclick="fillExample('C42')">C42</a></li>
+      <li><a class="exampleTerm" onclick="fillExample('DU145')">DU145</a></li>
+      <li><a class="exampleTerm" onclick="fillExample('LNCAP')">LNCAP</a></li>
+      <li><a class="exampleTerm" onclick="fillExample('PC3')">PC3</a></li>
+    </ul>
+  </li>
+  
+  <li><a>Skin</a>
+    <ul class="sub">
+      <li><a class="exampleTerm" onclick="fillExample('A431')">A431</a></li>
+      <li><a class="exampleTerm" onclick="fillExample('HACAT')">HACAT</a></li>
+      <li><a class="exampleTerm" onclick="fillExample('HNSCC')">HNSCC</a></li>
+    </ul>
+  </li>
+</ul>
+
+<br>
+
+
+

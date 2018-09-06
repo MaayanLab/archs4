@@ -1,0 +1,133 @@
+﻿
+.menu-v li, .menu-v a {zoom:1;} /* Hacks for IE6, IE7 */
+.menu-v, .menu-v ul
+{
+    /*width: 300px;  Main Menu Item widths */
+    /*border: 1px solid #ccc;*/
+    border-top:none;
+    position: relative;
+    font-size:0;
+    list-style: none; margin: 0; padding: 0; display:block;
+    padding-right: 5;
+    z-index:9;
+}
+                
+/* Top level menu links style
+---------------------------------------*/
+
+.menu-v li
+{
+    list-style: none; margin: 0; padding: 0;
+    cursor: pointer;
+}
+.menu-v li a
+{
+    font: normal 12px;
+    /*border-top: 1px solid #ccc;*/
+    display: block;
+    /*overflow: auto; force hasLayout in IE7 */
+    color: black;
+    text-decoration: none;
+    line-height:26px;
+    padding-left:16px;
+    cursor: pointer;
+}
+.menu-v ul li a
+{
+    line-height:30px;
+    cursor: pointer;
+}
+
+.menu-v li a.arrow:hover
+{
+    background-image:url(../images/arrow.png);
+    background-repeat: no-repeat;
+    background-position: 97% 50%;
+}
+
+/*Sub level menu items
+---------------------------------------*/
+.menu-v li ul
+{
+    position: absolute;
+    width: 160px; /*Sub Menu Items width */
+    visibility:hidden;
+}
+
+.menu-v li ul ul
+{
+    position: absolute;
+    width: 190px; /*Sub Menu Items width */
+    visibility:hidden;
+}
+
+.menu-v a.arrow
+{
+    background-image:url(../images/arrow.png);
+    background-repeat: no-repeat;
+    background-position: 97% 50%;
+}
+.menu-v li:hover, .menu-v li.onhover
+{
+    background-position:0 -62px;
+}
+.menu-v ul li
+{
+    background: rgba(255, 255, 255, 0.86);
+    background-image:none;
+}
+.menu-v ul li:hover, .menu-v ul li.onhover
+{
+    background: #FFF;
+    background-image:none;
+}
+
+.menu-v {
+  width: 260px;
+}
+
+.menu-v li{
+  border-style: none;
+  
+  transition: 0.3s;
+  transition-timing-function: ease;
+}
+
+.menu-v li a{
+  font-size: 12px;
+}
+
+.menu-v li:hover{
+  background-color: #efefef;
+}
+
+.menu-v li ul li:hover{
+  background-color: #efefef;
+}
+
+.menu-v li ul ul li:hover{
+  background-color: #9cfbd1;
+}
+
+#menu-v2 li ul li:hover{
+  background-color: #ffc868;
+}
+
+
+.menu-v {
+  border-radius: 5px 5px 5px 5px;
+  
+}
+
+.menu-v li ul{
+  border-radius: 5px 5px 5px 5px;
+  background-color: white;
+  border: 1px solid grey;
+  padding: 4px 0px 4px 0px;
+  margin-top: -5px;
+  
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+
+/* End */

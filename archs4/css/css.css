@@ -1,125 +1,27 @@
-
-/* define height and width of scrollable area. Add 16px to width for scrollbar          */
-div.tableContainer {
-  clear: both;
-  height: 340px;
-  overflow: auto;
-  width: 650px
-}
-
-/* Reset overflow value to hidden for all non-IE browsers. */
-html>body div.tableContainer {
-  overflow: hidden;
-  width: 650px
-}
-
-/* define width of table. IE browsers only                 */
-div.tableContainer table {
-  float: left;
-  width: 650px
-}
-
-/* define width of table. Add 16px to width for scrollbar.           */
-/* All other non-IE browsers.                                        */
-html>body div.tableContainer table {
-  width: 650px
-}
-
-/* set table header to a fixed position. WinIE 6.x only                                       */
-/* In WinIE 6.x, any element with a position property set to relative and is a child of       */
-/* an element that has an overflow property set, the relative value translates into fixed.    */
-/* Ex: parent element DIV with a class of tableContainer has an overflow property set to auto */
-thead.fixedHeader tr {
-  position: relative
-}
-
-/* set THEAD element to have block level attributes. All other non-IE browsers            */
-/* this enables overflow to work on TBODY element. All other non-IE, non-Mozilla browsers */
-html>body thead.fixedHeader tr {
-  display: block
-}
-
-/* define the table content to be scrollable                                              */
-/* set TBODY element to have block level attributes. All other non-IE browsers            */
-/* this enables overflow to work on TBODY element. All other non-IE, non-Mozilla browsers */
-/* induced side effect is that child TDs no longer accept width: auto                     */
-html>body tbody.scrollContent {
-  display: block;
-  height: 292px;
-  overflow: auto;
-  width: 100%;
-  border-bottom: 1px solid lightgrey;
-}
-
-/* define width of TH elements: 1st, 2nd, and 3rd respectively.          */
-/* Add 16px to last TH for scrollbar padding. All other non-IE browsers. */
-/* http://www.w3.org/TR/REC-CSS2/selector.html#adjacent-selectors        */
-html>body thead.fixedHeader th {
-  width: 50px
-}
-
-html>body thead.fixedHeader th + th {
-  width: 600px
-}
-
-html>body thead.fixedHeader th + th + th {
-  width: 75px
-}
-
-/* define width of TD elements: 1st, 2nd, and 3rd respectively.          */
-/* All other non-IE browsers.                                            */
-/* http://www.w3.org/TR/REC-CSS2/selector.html#adjacent-selectors        */
-html>body tbody.scrollContent td {
-  width: 50px
-}
-
-html>body tbody.scrollContent td + td {
-  width: 600px
-}
-
-html>body tbody.scrollContent td + td + td {
-  width: 50px
+.table-striped{
+    font-size: 12px;
 }
 
 #wrapper {
-    width: 1350px;
     overflow: hidden;
+    width: 100%;
 }
+
 #first {
     float:left;
-    width: 650px;
+    width:calc(100% - 500px);
+    min-width: 500px;
+    font-size: 8pt;
 }
+
 #second {
     overflow: hidden;
     text-align: center;
     vertical-align: middle;
     line-height: 90px;  
     color: grey;
+    width: 500px;
 }
-
-
-table.tableSection {
-    display: table;
-    width: 100%;
-}
-table.tableSection thead, table.tableSection tbody {
-    float: left;
-    width: 100%;
-}
-table.tableSection tbody {
-    overflow: auto;
-    height: 150px;
-}
-table.tableSection tr {
-    width: 100%;
-    display: table;
-    text-align: left;
-}
-table.tableSection th, table.tableSection td {
-    width: 33%;
-}
-
-
 
 
 #animation-target {
