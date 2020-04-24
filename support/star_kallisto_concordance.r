@@ -133,7 +133,7 @@ sras = colnames(star_cc)
 ww = which(mapping[,2] %in% sras)
 
 
-mydb = dbConnect(MySQL(), user='kallistomaster', password='Tuhuratha3', dbname='alignment_pipeline', host='kallisto.ckjqvk8k3pqb.us-east-1.rds.amazonaws.com')
+mydb = dbConnect(MySQL(), user='XXX', password='XXX', dbname='XXX', host='XXX')
 
 kallisto_ll = list()
 for(lid in mapping[ww,3]){
